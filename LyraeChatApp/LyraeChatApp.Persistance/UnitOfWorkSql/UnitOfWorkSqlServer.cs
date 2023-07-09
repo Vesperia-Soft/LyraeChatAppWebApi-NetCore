@@ -12,9 +12,14 @@ public class UnitOfWorkSqlServer : IUnitOfWork
         _configuration = configuration;
     }
 
+    public string GetConnectionString()
+    {
+        return _configuration.GetConnectionString("LyraeChatAppConnection");
+
+    }
     public IUnitOfWorkAdapter Create()
     {
-        var connectionString = Parameters.ConnectionString;
+        var connectionString = GetConnectionString();
 
         return new UnitOfWorkSqlServerAdapter(connectionString);
     }
