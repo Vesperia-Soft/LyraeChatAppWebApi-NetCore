@@ -2,6 +2,5 @@
 
 public class Parameters
 {
-    public const string ConnectionString = "Server=localhost;Database=example;";
-    public const decimal IvaRate = 0.18m;
+    public const string ConnectionString = "Data Source=localhost;Initial Catalog=example;Integrated Security=True;MultipleActiveResultSets=True";
 }

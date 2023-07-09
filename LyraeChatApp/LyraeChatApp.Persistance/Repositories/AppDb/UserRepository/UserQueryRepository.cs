@@ -13,7 +13,21 @@ public class UserQueryRepository : Repository, IUserQueryRepository
     }
     public IQueryable<User> GetAll()
     {
-        throw new NotImplementedException();
+        var command = CreateCommand("Select * from Users");
+        using(var reader= command.ExecuteReader())
+        {
+            List<User> users= new List<User>();
+            while(reader.Read())
+            {
+                users.Add(new User
+                {
+                    Id = Convert.ToInt32(reader["Id"]),
+                    Name = reader["Name"].ToString()
+                });
+            }
+            return users.AsQueryable();
+        }
+     
     }
 
     public async Task<User> GetById(int Id)

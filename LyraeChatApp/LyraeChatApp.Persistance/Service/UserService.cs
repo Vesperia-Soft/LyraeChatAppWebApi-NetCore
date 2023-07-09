@@ -11,6 +11,16 @@ public class UserService : IUserService
     {
         _unitOfWork = unitOfWork;
     }
+
+    public async Task CreateUsers(User user)
+    {
+       using(var context = _unitOfWork.Create())
+        {
+          await  context.Repositories.userCommandRepository.AddAsync(user);
+            context.SaveChanges();
+        }
+    }
+
     public User Get(int id)
     {
         using (var context = _unitOfWork.Create())
@@ -20,6 +30,37 @@ public class UserService : IUserService
             var result = context.Repositories.userQueryRepository.GetById(id).Result;
             
             return result;
+        }
+    }
+
+    public IQueryable<User> GetAllUsers()
+    {
+        using(var context = _unitOfWork.Create())
+        {
+            var result =context.Repositories.userQueryRepository.GetAll();
+
+            return result;
+        }
+    }
+
+    public async Task RemoveUsers(int id)
+    {
+        using (var context = _unitOfWork.Create())
+        {
+           await  context.Repositories.userCommandRepository.RemoveById(id);
+
+            context.SaveChanges();
+        }
+    }
+
+    public  void UpdateUsers(User user)
+    {
+        using (var context = _unitOfWork.Create())
+        {
+            
+           context.Repositories.userCommandRepository.Update(user);
+
+            context.SaveChanges();
         }
     }
 }
