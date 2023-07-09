@@ -12,7 +12,7 @@
 - Teknolojiler
     + .Net Core Web Api
     + React.js
-- Tasarım Deseni
+- Mimari 
     + Clean Architecture
 - Spesifik Kütüphaneler
     + SignalR
