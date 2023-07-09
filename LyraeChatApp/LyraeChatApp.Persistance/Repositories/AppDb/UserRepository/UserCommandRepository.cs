@@ -11,9 +11,12 @@ public class UserCommandRepository : Repository, IUserCommandRepository
         this._context = context;
         this._transaction = transaction;
     }
-    public Task AddAsync(User model)
+    public async Task AddAsync(User model)
     {
-        throw new NotImplementedException();
+        var query = "INSERT INTO Users (Name) VALUES (@name); SELECT SCOPE_IDENTITY();";
+        var command =CreateCommand(query);
+        command.Parameters.AddWithValue("@name", model.Name);
+        await command.ExecuteNonQueryAsync();
     }
 
     public Task AddRangeAsync(IEnumerable<User> model)
@@ -21,14 +24,17 @@ public class UserCommandRepository : Repository, IUserCommandRepository
         throw new NotImplementedException();
     }
 
-    public void Remove(User entity)
+    public void Remove(User user)
     {
         throw new NotImplementedException();
+       
     }
 
-    public Task RemoveById(string id)
+    public async Task  RemoveById(int id)
     {
-        throw new NotImplementedException();
+        var command = CreateCommand("delete from Users where Id=@id");
+        command.Parameters.AddWithValue("@id", id);
+          await  command.ExecuteNonQueryAsync();
     }
 
     public void RemoveRange(IEnumerable<User> model)
@@ -38,7 +44,12 @@ public class UserCommandRepository : Repository, IUserCommandRepository
 
     public void Update(User entity)
     {
-        throw new NotImplementedException();
+        var query = "update Users set Name=@name where Id=@id";
+        var command = CreateCommand(query);
+        command.Parameters.AddWithValue("@name", entity.Name);
+        command.Parameters.AddWithValue("@id", entity.Id);
+        
+        command.ExecuteNonQuery();
     }
 
     public void UpdateRange(IEnumerable<User> model)

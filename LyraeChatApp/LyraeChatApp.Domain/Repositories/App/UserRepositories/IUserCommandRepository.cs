@@ -8,7 +8,7 @@ public interface IUserCommandRepository
     Task AddRangeAsync(IEnumerable<User> model);
     void Update(User entity);
     void UpdateRange(IEnumerable<User> model);
-    Task RemoveById(string id);
+    Task RemoveById(int id);
     void Remove(User entity);
     void RemoveRange(IEnumerable<User> model);
 }
