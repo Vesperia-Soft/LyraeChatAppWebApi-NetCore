@@ -14,10 +14,9 @@ public class UnitOfWorkSqlServer : IUnitOfWork
 
     public IUnitOfWorkAdapter Create()
     {
-        var connectionString = _configuration == null
-            ? Parameters.ConnectionString
-            : _configuration.GetConnectionString("SqlConnectionString");
+        var connectionString = Parameters.ConnectionString;
+            
 
-        return new UnitOfWorkSqlServerAdapter("Data Source=localhost;Initial Catalog=example;Integrated Security=True");
+        return new UnitOfWorkSqlServerAdapter(connectionString);
     }
 }
