@@ -15,7 +15,6 @@ public class UnitOfWorkSqlServer : IUnitOfWork
     public IUnitOfWorkAdapter Create()
     {
         var connectionString = Parameters.ConnectionString;
-            
 
         return new UnitOfWorkSqlServerAdapter(connectionString);
     }

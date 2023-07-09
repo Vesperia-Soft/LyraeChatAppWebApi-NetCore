@@ -15,6 +15,12 @@ public class UserController :ControllerBase
         _userService = userService;
     }
 
+[HttpGet("[action]")]
+    public IActionResult GetAll()
+    {
+        var users = _userService.GetAllUsers();
+        return Ok(users);
+    }
     [HttpGet("{id}")]
     public ActionResult<IEnumerable<string>> Get(int id)
     {
@@ -22,4 +28,5 @@ public class UserController :ControllerBase
             _userService.Get(id)
         );
     }
+    
 }

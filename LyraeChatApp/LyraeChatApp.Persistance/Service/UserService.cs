@@ -22,4 +22,14 @@ public class UserService : IUserService
             return result;
         }
     }
+
+    public IQueryable<User> GetAllUsers()
+    {
+        using(var context = _unitOfWork.Create())
+        {
+            var result =context.Repositories.userQueryRepository.GetAll();
+
+            return result;
+        }
+    }
 }
