@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LyraeChatApp.Domain", "Lyra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LyraeChatApp.Application", "LyraeChatApp.Application\LyraeChatApp.Application.csproj", "{BD886E12-8A89-4435-8342-D0956684E65B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LyraeChatApp.Persistance", "LyraeChatApp.Persistance\LyraeChatApp.Persistance.csproj", "{38EC78E1-F607-4192-AD10-BCA3F206429F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LyraeChatApp.Infrastructure", "LyraeChatApp.Infrastructure\LyraeChatApp.Infrastructure.csproj", "{F491DADD-7ABD-45A3-BB08-D1406C45C6DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LyraeChatApp.Presentation", "LyraeChatApp.Presentation\LyraeChatApp.Presentation.csproj", "{BE3E2765-7386-4C67-9E74-6896A1965480}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +27,18 @@ Global
 		{BD886E12-8A89-4435-8342-D0956684E65B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD886E12-8A89-4435-8342-D0956684E65B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD886E12-8A89-4435-8342-D0956684E65B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38EC78E1-F607-4192-AD10-BCA3F206429F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38EC78E1-F607-4192-AD10-BCA3F206429F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38EC78E1-F607-4192-AD10-BCA3F206429F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38EC78E1-F607-4192-AD10-BCA3F206429F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F491DADD-7ABD-45A3-BB08-D1406C45C6DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F491DADD-7ABD-45A3-BB08-D1406C45C6DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F491DADD-7ABD-45A3-BB08-D1406C45C6DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F491DADD-7ABD-45A3-BB08-D1406C45C6DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE3E2765-7386-4C67-9E74-6896A1965480}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE3E2765-7386-4C67-9E74-6896A1965480}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE3E2765-7386-4C67-9E74-6896A1965480}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE3E2765-7386-4C67-9E74-6896A1965480}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
