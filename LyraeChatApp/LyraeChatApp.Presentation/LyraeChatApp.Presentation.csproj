@@ -11,4 +11,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LyraeChatApp.Application\LyraeChatApp.Application.csproj" />
+    <ProjectReference Include="..\LyraeChatApp.Persistance\LyraeChatApp.Persistance.csproj" />
+  </ItemGroup>
+
 </Project>

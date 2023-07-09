@@ -1,14 +1,14 @@
 ﻿using LyraeChatApp.Domain.Models;
-using LyraeChatApp.Domain.Repositories.GenericRepositories.AppDbContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LyraeChatApp.Domain.Repositories.App.UserRepositories
+namespace LyraeChatApp.Domain.Repositories.App.UserRepositories;
+
+public interface IUserCommandRepository
 {
-    internal interface IUserCommandRepository :IAppCommandRepository<User>
-    {
-    }
+    Task AddAsync(User model);
+    Task AddRangeAsync(IEnumerable<User> model);
+    void Update(User entity);
+    void UpdateRange(IEnumerable<User> model);
+    Task RemoveById(string id);
+    void Remove(User entity);
+    void RemoveRange(IEnumerable<User> model);
 }
