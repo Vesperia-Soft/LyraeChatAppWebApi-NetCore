@@ -7,7 +7,7 @@ namespace LyraeChatApp.Presentation.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController :ControllerBase
+public class UserController : ControllerBase
 {
     private IUserService _userService;
 
@@ -16,7 +16,7 @@ public class UserController :ControllerBase
         _userService = userService;
     }
 
-[HttpGet("[action]")]
+    [HttpGet("[action]")]
     public IActionResult GetAll([FromQuery] PaginationRequest request)
     {
         var users = _userService.GetAllUsers(request);
@@ -32,10 +32,10 @@ public class UserController :ControllerBase
     }
 
     [HttpPost("[action]")]
-    public async  Task<IActionResult> Create(User user)
+    public async Task<IActionResult> Create(CreateUserModel userModel)
     {
-       await  _userService.CreateUsers(user);
-        return Ok(user);
+        await _userService.CreateUsers(userModel);
+        return Ok(userModel);
     }
 
     [HttpPut("[action]")]
@@ -51,5 +51,5 @@ public class UserController :ControllerBase
         _userService.RemoveUsers(id);
         return Ok();
     }
-    
+
 }

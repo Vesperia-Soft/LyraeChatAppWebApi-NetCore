@@ -8,7 +8,7 @@ public interface IUserService
 {
     User Get(int id);
     PaginationHelper<User> GetAllUsers(PaginationRequest request);
-    Task CreateUsers(User user);
+    Task CreateUsers(CreateUserModel userModel);
     void UpdateUsers(User user);
     Task RemoveUsers(int id);
 

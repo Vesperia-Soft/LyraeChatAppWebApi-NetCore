@@ -6,16 +6,38 @@ namespace LyraeChatApp.Persistance.Repositories.AppDb.UserRepository;
 
 public class UserCommandRepository : Repository, IUserCommandRepository
 {
-    public UserCommandRepository(SqlConnection context , SqlTransaction transaction)
+    public UserCommandRepository(SqlConnection context, SqlTransaction transaction)
     {
         this._context = context;
         this._transaction = transaction;
     }
     public async Task AddAsync(User model)
     {
-        var query = "INSERT INTO Users (Name) VALUES (@name); SELECT SCOPE_IDENTITY();";
-        var command =CreateCommand(query);
+        var query = "INSERT INTO Users " +
+            "(UserName,Email,PhoneNumber," +
+            "Name,SurName,Photo,DepartmanId," +
+            "CreatedDate,CreatorName,DeletedDate," +
+            "DeleterName,UpdateDate,UpdaterName,IsActive) " +
+            "VALUES " +
+            "(@username,@email,@phonenumber,@name,@surname," +
+            "@photo, @departmanId,@createddate,@creatorname," +
+            "@DeletedDate,@deletername,@updatedate,@updatername,@isactive); " +
+            "SELECT SCOPE_IDENTITY();";
+        var command = CreateCommand(query);
+        command.Parameters.AddWithValue("@username", model.UserName);
+        command.Parameters.AddWithValue("@email", model.Email);
+        command.Parameters.AddWithValue("@phonenumber", model.PhoneNumber);
         command.Parameters.AddWithValue("@name", model.Name);
+        command.Parameters.AddWithValue("@surname", model.SurName);
+        command.Parameters.AddWithValue("@photo", model.Photo);
+        command.Parameters.AddWithValue("@departmanId", model.DepartmanId);
+        command.Parameters.AddWithValue("@createddate", model.CreatedDate);
+        command.Parameters.AddWithValue("@creatorname", model.CreatorName);
+        command.Parameters.AddWithValue("@DeletedDate", model.DeletedTime == null ? DBNull.Value : model.DeletedTime);
+        command.Parameters.AddWithValue("@deletername", model.DeleterName == null ? DBNull.Value : model.DeleterName);
+        command.Parameters.AddWithValue("@updatedate", model.UpdateDate == null ? DBNull.Value : model.UpdateDate);
+        command.Parameters.AddWithValue("@updatername", model.UpdaterName == null ? DBNull.Value : model.UpdaterName);
+        command.Parameters.AddWithValue("@isactive", model.IsActive);
         await command.ExecuteNonQueryAsync();
     }
 
@@ -27,14 +49,14 @@ public class UserCommandRepository : Repository, IUserCommandRepository
     public void Remove(User user)
     {
         throw new NotImplementedException();
-       
+
     }
 
-    public async Task  RemoveById(int id)
+    public async Task RemoveById(int id)
     {
         var command = CreateCommand("delete from Users where Id=@id");
         command.Parameters.AddWithValue("@id", id);
-          await  command.ExecuteNonQueryAsync();
+        await command.ExecuteNonQueryAsync();
     }
 
     public void RemoveRange(IEnumerable<User> model)
@@ -48,7 +70,7 @@ public class UserCommandRepository : Repository, IUserCommandRepository
         var command = CreateCommand(query);
         command.Parameters.AddWithValue("@name", entity.Name);
         command.Parameters.AddWithValue("@id", entity.Id);
-        
+
         command.ExecuteNonQuery();
     }
 
