@@ -12,7 +12,25 @@ public class UserQueryRepository : Repository, IUserQueryRepository
         this._context = context;
         this._transaction = transaction;
     }
-    public PaginationHelper<User> GetAll(int pageNumber, int pageSize)
+
+    public async  Task<bool> CheckUserId(int userId)
+    {
+        var command = CreateCommand("SELECT COUNT(*) FROM Users WHERE Id = @id");
+
+        command.Parameters.AddWithValue("@id", userId);
+
+        var result = await command.ExecuteScalarAsync();
+
+        int count;
+        if (int.TryParse(result?.ToString(), out count))
+        {
+            return count > 0;
+        }
+
+        return false;
+    }
+
+    public PaginationHelper<UserListModel> GetAll(int pageNumber, int pageSize)
     {
         var command = CreateCommand("SELECT COUNT(*) FROM Users");
         int totalCount = (int)command.ExecuteScalar();
@@ -20,17 +38,25 @@ public class UserQueryRepository : Repository, IUserQueryRepository
         command.CommandText = $"SELECT * FROM Users ORDER BY Id OFFSET {((pageNumber - 1) * pageSize)} ROWS FETCH NEXT {pageSize} ROWS ONLY";
         using (var reader = command.ExecuteReader())
         {
-            List<User> users = new List<User>();
+            List<UserListModel> users = new List<UserListModel>();
             while (reader.Read())
             {
-                users.Add(new User
-                {
-                    Id = Convert.ToInt32(reader["Id"]),
-                    Name = reader["Name"].ToString()
-                });
+                UserListModel user = new UserListModel();
+
+                user.Id = reader["Id"] != DBNull.Value ? Convert.ToInt32(reader["Id"]) : 0;
+                user.UserName = reader["UserName"] != DBNull.Value ? reader["UserName"].ToString() : string.Empty;
+                user.Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : string.Empty;
+                user.PhoneNumber = reader["PhoneNumber"] != DBNull.Value ? reader["PhoneNumber"].ToString() : string.Empty;
+                user.Name = reader["Name"] != DBNull.Value ? reader["Name"].ToString() : string.Empty;
+                user.SurName = reader["SurName"] != DBNull.Value ? reader["SurName"].ToString() : string.Empty;
+                user.Photo = reader["Photo"] != DBNull.Value ? reader["Photo"].ToString() : string.Empty;
+                user.DepartmanId = reader["DepartmanId"] != DBNull.Value ? Convert.ToInt32(reader["DepartmanId"]) : 0;
+                user.IsActive = reader["IsActive"] != DBNull.Value ? Convert.ToBoolean(reader["IsActive"]) : false;
+
+                users.Add(user);
             }
 
-            return new PaginationHelper<User>(totalCount, pageSize, pageNumber, users);
+            return new PaginationHelper<UserListModel>(totalCount, pageSize, pageNumber, users);
         }
     }
 
@@ -46,9 +72,17 @@ public class UserQueryRepository : Repository, IUserQueryRepository
 
             return new User
             {
-                Id = Convert.ToInt32(reader["Id"]),
-                Name = reader["Name"].ToString()
-            };
+               Id = reader["Id"] != DBNull.Value ? Convert.ToInt32(reader["Id"]) : 0,
+            UserName = reader["UserName"] != DBNull.Value ? reader["UserName"].ToString() : string.Empty,
+           Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : string.Empty,
+           PhoneNumber = reader["PhoneNumber"] != DBNull.Value ? reader["PhoneNumber"].ToString() : string.Empty,
+           Name = reader["Name"] != DBNull.Value ? reader["Name"].ToString() : string.Empty,
+           SurName = reader["SurName"] != DBNull.Value ? reader["SurName"].ToString() : string.Empty,
+           Photo = reader["Photo"] != DBNull.Value ? reader["Photo"].ToString() : string.Empty,
+           DepartmanId = reader["DepartmanId"] != DBNull.Value ? Convert.ToInt32(reader["DepartmanId"]) : 0,
+           IsActive = reader["IsActive"] != DBNull.Value ? Convert.ToBoolean(reader["IsActive"]) : false
+
+        };
         }
     }
 

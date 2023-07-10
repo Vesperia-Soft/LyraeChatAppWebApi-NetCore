@@ -1,8 +1,6 @@
-﻿using LyraeChatApp.Domain.Core;
+﻿namespace LyraeChatApp.Domain.Models.User;
 
-namespace LyraeChatApp.Domain.Models.User;
-
-public  class User :EntityBase
+public sealed class CreateUserModel
 {
     public string UserName { get; set; }
     public string Email { get; set; }
@@ -11,4 +9,8 @@ public  class User :EntityBase
     public string SurName { get; set; }
     public string Photo { get; set; }
     public int DepartmanId { get; set; }
+    public DateTime CreatedDate { get; set; } = DateTime.Now;
+    public string CreatorName { get; set; } = "Admin";
+    public bool IsActive { get; set; } = true;
+
 }

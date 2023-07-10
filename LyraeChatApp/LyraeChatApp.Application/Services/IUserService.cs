@@ -6,9 +6,9 @@ namespace LyraeChatApp.Application.Services;
 
 public interface IUserService
 {
-    User Get(int id);
-    PaginationHelper<User> GetAllUsers(PaginationRequest request);
-    Task CreateUsers(User user);
+    Task<User> Get(int id);
+    PaginationHelper<UserListModel> GetAllUsers(PaginationRequest request);
+    Task CreateUsers(CreateUserModel userModel);
     void UpdateUsers(User user);
     Task RemoveUsers(int id);
 
