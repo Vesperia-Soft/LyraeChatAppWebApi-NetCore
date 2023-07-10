@@ -1,4 +1,4 @@
-﻿using LyraeChatApp.Domain.Models;
+﻿using LyraeChatApp.Domain.Models.User;
 
 namespace LyraeChatApp.Domain.Repositories.App.UserRepositories;
 

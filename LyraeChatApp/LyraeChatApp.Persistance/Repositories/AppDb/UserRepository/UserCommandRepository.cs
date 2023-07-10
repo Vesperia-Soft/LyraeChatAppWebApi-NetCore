@@ -1,4 +1,4 @@
-﻿using LyraeChatApp.Domain.Models;
+﻿using LyraeChatApp.Domain.Models.User;
 using LyraeChatApp.Domain.Repositories.App.UserRepositories;
 using System.Data.SqlClient;
 
