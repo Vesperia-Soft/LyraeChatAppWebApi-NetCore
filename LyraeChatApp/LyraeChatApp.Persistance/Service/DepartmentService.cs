@@ -33,8 +33,8 @@ public sealed class DepartmentService : IDepartmentService
     {
         using (var context = _unitOfWork.Create())
         {
-            if (!await context.Repositories.departmentQueryRepository.CheckDepartmentId(id))
-                throw new Exception("Silmek istediğiniz departman sistemde bulunamadı");
+            if (!context.Repositories.departmentQueryRepository.CheckDepartmentId(id).Result)
+                throw new Exception("Listelemek istediğiniz departman sistemde bulunamadı");
             var result = context.Repositories.departmentQueryRepository.GetById(id).Result;
             return result;
         }
@@ -53,7 +53,7 @@ public sealed class DepartmentService : IDepartmentService
     {
         using (var context = _unitOfWork.Create())
         {
-            if (!await context.Repositories.departmentQueryRepository.CheckDepartmentId(id))
+            if (!context.Repositories.departmentQueryRepository.CheckDepartmentId(id).Result)
                 throw new Exception("Silmek istediğiniz departman sistemde bulunamadı");
             await context.Repositories.departmentCommandRepository.RemoveById(id);
             context.SaveChanges();
@@ -64,7 +64,7 @@ public sealed class DepartmentService : IDepartmentService
     {
         using (var context = _unitOfWork.Create())
         {
-            if (!await context.Repositories.departmentQueryRepository.CheckDepartmentId(model.Id))
+            if (!context.Repositories.departmentQueryRepository.CheckDepartmentId(model.Id).Result)
                 throw new Exception("Güncellemek istediğiniz departman sistemde bulunamadı");
 
             var entity = _mapper.Map<Department>(model);
