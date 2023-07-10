@@ -1,6 +1,6 @@
 ﻿using LyraeChatApp.Application.Services;
-using LyraeChatApp.Domain.Models;
-using LyraeChatApp.Persistance.Service;
+using LyraeChatApp.Domain.Models.HelperModels;
+using LyraeChatApp.Domain.Models.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LyraeChatApp.Presentation.Controllers;
@@ -17,9 +17,9 @@ public class UserController :ControllerBase
     }
 
 [HttpGet("[action]")]
-    public IActionResult GetAll()
+    public IActionResult GetAll([FromQuery] PaginationRequest request)
     {
-        var users = _userService.GetAllUsers();
+        var users = _userService.GetAllUsers(request);
         return Ok(users);
     }
 

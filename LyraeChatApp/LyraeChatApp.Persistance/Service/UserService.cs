@@ -1,5 +1,7 @@
 ﻿using LyraeChatApp.Application.Services;
-using LyraeChatApp.Domain.Models;
+using LyraeChatApp.Domain.Helpers;
+using LyraeChatApp.Domain.Models.HelperModels;
+using LyraeChatApp.Domain.Models.User;
 using LyraeChatApp.Domain.UnitOfWork;
 
 namespace LyraeChatApp.Persistance.Service;
@@ -33,11 +35,11 @@ public class UserService : IUserService
         }
     }
 
-    public IQueryable<User> GetAllUsers()
+    public PaginationHelper<User> GetAllUsers(PaginationRequest request )
     {
         using(var context = _unitOfWork.Create())
         {
-            var result =context.Repositories.userQueryRepository.GetAll();
+            var result =context.Repositories.userQueryRepository.GetAll( request.PageNumber ,  request.PageSize);
 
             return result;
         }
