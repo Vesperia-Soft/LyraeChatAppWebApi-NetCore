@@ -1,5 +1,6 @@
 using LyraeChatApp.Application.Services;
 using LyraeChatApp.Domain.UnitOfWork;
+using LyraeChatApp.Persistance.Mapping;
 using LyraeChatApp.Persistance.Service;
 using LyraeChatApp.Persistance.UnitOfWorkSql;
 
@@ -12,6 +13,8 @@ builder.Services.AddTransient<IUnitOfWork, UnitOfWorkSqlServer>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 
