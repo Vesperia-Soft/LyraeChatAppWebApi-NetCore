@@ -27,19 +27,21 @@ public class UserService : IUserService
         }
     }
 
-    public User Get(int id)
+    public async Task< User> Get(int id)
     {
         using (var context = _unitOfWork.Create())
         {
-            //if (result == null)
-            //    throw new Exception($"bu {id} değeri Id Bulunamadı");
+            var checkUserId = await  context.Repositories.userQueryRepository.CheckUserId(id);
+
+          if (checkUserId == false)
+              throw new Exception($"bu {id} değeri Id Bulunamadı");
             var result = context.Repositories.userQueryRepository.GetById(id).Result;
 
             return result;
         }
     }
 
-    public PaginationHelper<User> GetAllUsers(PaginationRequest request)
+    public PaginationHelper<UserListModel> GetAllUsers(PaginationRequest request)
     {
         using (var context = _unitOfWork.Create())
         {
