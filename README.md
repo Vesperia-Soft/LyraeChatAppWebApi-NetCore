@@ -16,7 +16,7 @@
 * There will be users in the left bar. In the right bar there will be chat history and active chat.
 ### V2
 * Video call feature will come.
-* Project management support with Cevik Model
+* Project management support with Agile Model
 
 # Technologies
 - Backend
