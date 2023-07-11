@@ -7,4 +7,5 @@ public class UpdateMessageModel
     public int UserId { get; set; }
     public int RoomId { get; set; }
     public DateTime TimeStamps { get; set; }
+    public string UpdaterName { get; set; }
 }

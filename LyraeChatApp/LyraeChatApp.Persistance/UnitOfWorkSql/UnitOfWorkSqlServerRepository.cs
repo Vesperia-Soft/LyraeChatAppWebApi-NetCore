@@ -1,8 +1,10 @@
 ﻿using LyraeChatApp.Domain.Repositories.App.DepartmentRepositories;
+using LyraeChatApp.Domain.Repositories.App.LogRepositories;
 using LyraeChatApp.Domain.Repositories.App.MessageRepositories;
 using LyraeChatApp.Domain.Repositories.App.UserRepositories;
 using LyraeChatApp.Domain.UnitOfWork;
 using LyraeChatApp.Persistance.Repositories.AppDb.DepartmentRepository;
+using LyraeChatApp.Persistance.Repositories.AppDb.LogRepository;
 using LyraeChatApp.Persistance.Repositories.AppDb.MessageRepository;
 using LyraeChatApp.Persistance.Repositories.AppDb.UserRepository;
 using System.Data.SqlClient;
@@ -18,6 +20,7 @@ public class UnitOfWorkSqlServerRepository : IUnitOfWorkRepository
     public IDepartmentQueryRepository departmentQueryRepository { get; }
     public IMessageCommandRepository messageCommandRepository { get; }
     public IMessageQueryRepository messageQueryRepository { get; }
+    public ILogCommandRepository logCommandRepository { get; }
     #endregion
 
     #region CTOR
@@ -29,6 +32,7 @@ public class UnitOfWorkSqlServerRepository : IUnitOfWorkRepository
         departmentQueryRepository = new DepartmentQueryRepository(context, transaction);
         messageCommandRepository = new MessageCommandRepository(context, transaction);
         messageQueryRepository = new MessageQueryRepository(context, transaction);
+        logCommandRepository = new LogCommandRepository(context, transaction);
     }
     #endregion
 }

@@ -12,22 +12,32 @@ public class MessageService : IMessageService
 
     private readonly IUnitOfWork _unitOfWork;
     private IMapper _mapper;
+    private readonly ILogService _logService;
 
-    public MessageService(IMapper mapper, IUnitOfWork unitOfWork)
+    public MessageService(IMapper mapper, IUnitOfWork unitOfWork, ILogService logService)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _logService = logService;
     }
 
     public async Task Create(CreateMessageModel model)
     {
         using (var context = _unitOfWork.Create())
         {
-            var entity = _mapper.Map<Message>(model);
-            entity.CreatedDate = DateTime.Now;
-            entity.TimeStamps = DateTime.Now;
-            await context.Repositories.messageCommandRepository.AddAsync(entity);
-            context.SaveChanges();
+            try
+            {
+                var entity = _mapper.Map<Message>(model);
+                await context.Repositories.messageCommandRepository.AddAsync(entity);
+                context.SaveChanges();
+
+                _logService.LogToDb("Mesaj oluşturuldu", model.CreatorName);
+            }
+            catch (Exception ex)
+            {
+                _logService.LogToDb($"Mesaj oluşturulurken hata oluştu: {ex.Message}", model.CreatorName);
+                throw;
+            }
         }
     }
 
@@ -35,11 +45,19 @@ public class MessageService : IMessageService
     {
         using (var context = _unitOfWork.Create())
         {
-            var condition = context.Repositories.messageQueryRepository.CheckMessagetId(id).Result;
-            if (!condition)
-                throw new Exception("Listelemek istediğiniz mesaj sistemde bulunamadı");
-            var result = context.Repositories.messageQueryRepository.GetById(id).Result;
-            return result;
+            try
+            {
+                var condition = context.Repositories.messageQueryRepository.CheckMessagetId(id).Result;
+                if (!condition)
+                    throw new Exception("Listelemek istediğiniz mesaj sistemde bulunamadı");
+                var result = context.Repositories.messageQueryRepository.GetById(id).Result;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logService.LogToDb($"Mesaj listelenirken hata oluştu: {ex.Message}", id.ToString());
+                throw;
+            }
         }
     }
 
@@ -47,8 +65,16 @@ public class MessageService : IMessageService
     {
         using (var context = _unitOfWork.Create())
         {
-            var result = context.Repositories.messageQueryRepository.GetAll(request.PageNumber, request.PageSize);
-            return result;
+            try
+            {
+                var result = context.Repositories.messageQueryRepository.GetAll(request.PageNumber, request.PageSize);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logService.LogToDb($"Mesaj listelenirken hata oluştu: {ex.Message}", "");
+                throw;
+            }
         }
     }
 
@@ -56,11 +82,19 @@ public class MessageService : IMessageService
     {
         using (var context = _unitOfWork.Create())
         {
-            if (!await context.Repositories.messageQueryRepository.CheckMessagetId(id))
-                throw new Exception("Silmek istediğiniz mesaj sistemde bulunamadı");
+            try
+            {
+                if (!await context.Repositories.messageQueryRepository.CheckMessagetId(id))
+                    throw new Exception("Silmek istediğiniz mesaj sistemde bulunamadı");
 
-            await context.Repositories.messageCommandRepository.RemoveById(id);
-            context.SaveChanges();
+                await context.Repositories.messageCommandRepository.RemoveById(id);
+                context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logService.LogToDb($"Mesaj silinirken hata oluştu: {ex.Message}", id.ToString());
+                throw;
+            }
         }
     }
 
@@ -68,13 +102,21 @@ public class MessageService : IMessageService
     {
         using (var context = _unitOfWork.Create())
         {
-            if (!context.Repositories.messageQueryRepository.CheckMessagetId(model.Id).Result)
-                throw new Exception("Güncellemek istediğiniz mesaj sistemde bulunamadı");
+            try
+            {
+                if (!context.Repositories.messageQueryRepository.CheckMessagetId(model.Id).Result)
+                    throw new Exception("Güncellemek istediğiniz mesaj sistemde bulunamadı");
 
-            var entity = _mapper.Map<Message>(model);
-            entity.UpdateDate = DateTime.Now;
-            context.Repositories.messageCommandRepository.Update(entity);
-            context.SaveChanges();
+                var entity = _mapper.Map<Message>(model);
+                entity.UpdateDate = DateTime.Now;
+                context.Repositories.messageCommandRepository.Update(entity);
+                context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logService.LogToDb($"Mesaj güncellenirken hata oluştu: {ex.Message}", model.UpdaterName);
+                throw;
+            }
         }
     }
 }

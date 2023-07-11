@@ -1,4 +1,5 @@
 ﻿using LyraeChatApp.Domain.Repositories.App.DepartmentRepositories;
+using LyraeChatApp.Domain.Repositories.App.LogRepositories;
 using LyraeChatApp.Domain.Repositories.App.MessageRepositories;
 using LyraeChatApp.Domain.Repositories.App.UserRepositories;
 
@@ -19,5 +20,9 @@ public interface IUnitOfWorkRepository
     #region MessageRepositories
     IMessageCommandRepository messageCommandRepository { get; }
     IMessageQueryRepository messageQueryRepository { get; }
+    #endregion
+
+    #region LogRepositories
+    ILogCommandRepository logCommandRepository { get; }
     #endregion
 }
