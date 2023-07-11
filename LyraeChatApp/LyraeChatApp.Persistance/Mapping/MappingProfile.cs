@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LyraeChatApp.Domain.Models.Department;
 using LyraeChatApp.Domain.Models.Room;
+using LyraeChatApp.Domain.Models.Message;
 using LyraeChatApp.Domain.Models.User;
 
 namespace LyraeChatApp.Persistance.Mapping;
@@ -21,6 +22,9 @@ public class MappingProfile : Profile
         #region Room
         CreateMap<Room,CreateRoomModel>().ReverseMap(); 
         CreateMap<Room,UpdateRoomModel>().ReverseMap();
+        #region MessageMapProfile
+        CreateMap<Message, CreateMessageModel>().ReverseMap();
+        CreateMap<Message, UpdateMessageModel>().ReverseMap();
         #endregion
     }
 }
