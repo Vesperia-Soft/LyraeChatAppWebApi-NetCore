@@ -25,6 +25,8 @@ public class RoomService : IRoomService
         {
             var entity = _mapper.Map<Room>(model);
             await context.Repositories.roomCommandRepository.AddAsync(entity);
+
+            context.SaveChanges();
         }
     }
 
@@ -61,7 +63,7 @@ public class RoomService : IRoomService
         }
     }
 
-    public async void UpdateRoom(UpdateDepartmentModel model)
+    public async void UpdateRoom(UpdateRoomModel model)
     {
         using (var context = _unitOfWork.Create())
         {
@@ -70,6 +72,7 @@ public class RoomService : IRoomService
 
             var entity = _mapper.Map<Room>(model);
             entity.UpdateDate = DateTime.Now;
+            entity.UpdaterName = "Admin";
             context.Repositories.roomCommandRepository.Update(entity);
             context.SaveChanges();
         }

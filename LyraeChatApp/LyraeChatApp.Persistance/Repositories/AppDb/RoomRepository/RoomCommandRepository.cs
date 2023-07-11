@@ -49,7 +49,7 @@ public class RoomCommandRepository : Repository,IRoomCommandRepository
 
     public void Update(Room entity)
     {
-        var query = "update Room set Name=@name, UpdaterName=@updaterName ,UpdateDate=@updateDate  where Id=@id";
+        var query = "UPDATE Room SET Name = @name, UpdaterName = @updaterName, UpdateDate = @updateDate WHERE Id = @id";
         var command = CreateCommand(query);
         command.Parameters.AddWithValue("@name", entity.Name);
         command.Parameters.AddWithValue("@updaterName", entity.UpdaterName);

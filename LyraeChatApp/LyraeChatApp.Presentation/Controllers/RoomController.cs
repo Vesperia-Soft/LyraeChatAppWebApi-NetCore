@@ -40,9 +40,9 @@ public class RoomController :ControllerBase
     }
 
     [HttpPut("[action]")]
-    public IActionResult Update(UpdateDepartmentModel department)
+    public IActionResult Update(UpdateRoomModel room)
     {
-        _roomService.UpdateRoom(department);
+        _roomService.UpdateRoom(room);
         return Ok();
     }
 
