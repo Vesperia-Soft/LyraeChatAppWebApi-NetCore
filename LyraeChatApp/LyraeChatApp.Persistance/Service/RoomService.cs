@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using LyraeChatApp.Application.Services;
 using LyraeChatApp.Domain.Helpers;
-using LyraeChatApp.Domain.Models.Department;
 using LyraeChatApp.Domain.Models.HelperModels;
 using LyraeChatApp.Domain.Models.Room;
 using LyraeChatApp.Domain.UnitOfWork;
@@ -12,6 +11,7 @@ public class RoomService : IRoomService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly ILogService _logService;
 
     public RoomService(IUnitOfWork unitOfWork, IMapper mapper)
     {
@@ -23,10 +23,17 @@ public class RoomService : IRoomService
     {
        using(var context = _unitOfWork.Create())
         {
-            var entity = _mapper.Map<Room>(model);
-            await context.Repositories.roomCommandRepository.AddAsync(entity);
+            try
+            {
+                var entity = _mapper.Map<Room>(model);
+                await context.Repositories.roomCommandRepository.AddAsync(entity);
 
-            context.SaveChanges();
+                context.SaveChanges();
+            }catch(Exception ex)
+            {
+                _logService.LogToDb($"Oda oluşturulurken hata oluştu : {ex.Message}", "Admin");
+                throw;
+            }
         }
     }
 
@@ -34,11 +41,18 @@ public class RoomService : IRoomService
     {
         using (var context = _unitOfWork.Create())
         {
-            if (!context.Repositories.roomQueryRepository.CheckRoomId(id).Result)
-                throw new Exception("Listelemek istediğiniz oda sistemde bulunamadı");
+            try
+            {
+                if (!context.Repositories.roomQueryRepository.CheckRoomId(id).Result)
+                    throw new Exception("Listelemek istediğiniz oda sistemde bulunamadı");
 
-            var result = context.Repositories.roomQueryRepository.GetById(id).Result;
-            return result;
+                var result = context.Repositories.roomQueryRepository.GetById(id).Result;
+                return result;
+            }catch(Exception ex)
+            {
+                _logService.LogToDb($"Odalar listelenirken hata oluştu: {ex.Message}", id.ToString());
+                throw;
+            }
         }
     }
 
@@ -46,8 +60,15 @@ public class RoomService : IRoomService
     {
         using (var context = _unitOfWork.Create())
         {
-            var result = context.Repositories.roomQueryRepository.GetAll(request.PageNumber, request.PageSize);
-            return result;
+            try
+            {
+                var result = context.Repositories.roomQueryRepository.GetAll(request.PageNumber, request.PageSize);
+                return result;
+            }catch(Exception ex)
+            {
+                _logService.LogToDb($"Odalar listelenirken hata oluştu: {ex.Message}", "");
+                throw;
+            }
         }
     }
 
@@ -55,11 +76,18 @@ public class RoomService : IRoomService
     {
         using (var context = _unitOfWork.Create())
         {
-            if (!context.Repositories.roomQueryRepository.CheckRoomId(id).Result)
-                throw new Exception("Silmek istediğiniz oda sistemde bulunamadı");
+            try
+            {
+                if (!context.Repositories.roomQueryRepository.CheckRoomId(id).Result)
+                    throw new Exception("Silmek istediğiniz oda sistemde bulunamadı");
 
-            await context.Repositories.roomCommandRepository.RemoveById(id);
-            context.SaveChanges();
+                await context.Repositories.roomCommandRepository.RemoveById(id);
+                context.SaveChanges();
+            }catch(Exception ex)
+            {
+                _logService.LogToDb($"Oda silinirken hata oluştu: {ex.Message}", id.ToString());
+                throw;
+            }
         }
     }
 
@@ -67,14 +95,22 @@ public class RoomService : IRoomService
     {
         using (var context = _unitOfWork.Create())
         {
-            if (!context.Repositories.roomQueryRepository.CheckRoomId(model.Id).Result)
-                throw new Exception("Güncellemek istediğiniz oda  sistemde bulunamadı");
+            try
+            {
+                if (!context.Repositories.roomQueryRepository.CheckRoomId(model.Id).Result)
+                    throw new Exception("Güncellemek istediğiniz oda  sistemde bulunamadı");
 
-            var entity = _mapper.Map<Room>(model);
-            entity.UpdateDate = DateTime.Now;
-            entity.UpdaterName = "Admin";
-            context.Repositories.roomCommandRepository.Update(entity);
-            context.SaveChanges();
+                var entity = _mapper.Map<Room>(model);
+                entity.UpdateDate = DateTime.Now;
+                entity.UpdaterName = "Admin";
+                context.Repositories.roomCommandRepository.Update(entity);
+                context.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                _logService.LogToDb($"Oda güncellenirken hata oluştu: {ex.Message}", "Admin");
+                throw;
+            }
         }
     }
 }
