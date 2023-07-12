@@ -16,6 +16,7 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
+
     [HttpGet("[action]")]
     public IActionResult GetAll([FromQuery] PaginationRequest request)
     {
