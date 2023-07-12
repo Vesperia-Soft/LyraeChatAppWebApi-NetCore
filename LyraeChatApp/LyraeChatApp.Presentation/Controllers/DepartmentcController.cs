@@ -1,10 +1,12 @@
 ﻿using LyraeChatApp.Application.Services;
 using LyraeChatApp.Domain.Models.Department;
 using LyraeChatApp.Domain.Models.HelperModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace LyraeChatApp.Presentation.Controllers;
-
+[Authorize(Roles = "Admin")]
 [ApiController]
 [Route("[controller]")]
 public class DepartmentController : ControllerBase
