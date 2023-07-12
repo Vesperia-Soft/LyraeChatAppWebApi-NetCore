@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using LyraeChatApp.Domain.Models.Department;
-using LyraeChatApp.Domain.Models.Room;
 using LyraeChatApp.Domain.Models.Message;
+using LyraeChatApp.Domain.Models.Room;
 using LyraeChatApp.Domain.Models.User;
 
 namespace LyraeChatApp.Persistance.Mapping;
