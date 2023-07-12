@@ -7,7 +7,7 @@ namespace LyraeChatApp.Domain.Repositories.App.UserRepositories;
 public interface IUserQueryRepository
 {
     PaginationHelper<UserListModel> GetAll(int pageNumber, int pageSize);
-    IQueryable<User> GetWhere();
+    Task<User> CheckUserNameAndPassword(string userName);
     Task<User> GetById(int Id);
     Task<User> GetFirstByExpression();
     Task<bool> CheckUserId(int userId);

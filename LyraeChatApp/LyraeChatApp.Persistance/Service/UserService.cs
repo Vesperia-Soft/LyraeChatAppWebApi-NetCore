@@ -17,6 +17,17 @@ public class UserService : IUserService
         _mapper = mapper;
     }
 
+    public Task<User> CheckUser(string userName)
+    {
+        using (var context = _unitOfWork.Create())
+        {
+            var result = context.Repositories.userQueryRepository.CheckUserNameAndPassword(userName);
+
+
+            return result;
+        }
+    }
+
     public async Task CreateUsers(CreateUserModel user)
     {
         using (var context = _unitOfWork.Create())
