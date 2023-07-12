@@ -1,4 +1,5 @@
 ﻿
+using LyraeChatApp.Domain.Models.User;
 using LyraeChatApp.Presentation.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
