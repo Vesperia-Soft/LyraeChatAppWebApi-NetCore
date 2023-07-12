@@ -12,6 +12,8 @@ public class MappingProfile : Profile
     {
         #region UserMapProfile
         CreateMap<User, CreateUserModel>().ReverseMap();
+        CreateMap<UserLoginResponseModel, User>().ReverseMap();
+        CreateMap<User, UserLoginResponseModel>().ReverseMap();
         #endregion
 
         #region DepartmentMapProfile

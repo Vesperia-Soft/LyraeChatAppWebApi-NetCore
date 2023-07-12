@@ -17,11 +17,11 @@ public class UserCommandRepository : Repository, IUserCommandRepository
             "(UserName,Email,PhoneNumber," +
             "Name,SurName,Photo,DepartmanId," +
             "CreatedDate,CreatorName,DeletedDate," +
-            "DeleterName,UpdateDate,UpdaterName,IsActive) " +
+            "DeleterName,UpdateDate,UpdaterName,IsActive,PasswordHash,RoleName) " +
             "VALUES " +
             "(@username,@email,@phonenumber,@name,@surname," +
             "@photo, @departmanId,@createddate,@creatorname," +
-            "@DeletedDate,@deletername,@updatedate,@updatername,@isactive); " +
+            "@DeletedDate,@deletername,@updatedate,@updatername,@isactive,@passwordHash,@roleName); " +
             "SELECT SCOPE_IDENTITY();";
         var command = CreateCommand(query);
         command.Parameters.AddWithValue("@username", model.UserName);
@@ -38,6 +38,8 @@ public class UserCommandRepository : Repository, IUserCommandRepository
         command.Parameters.AddWithValue("@updatedate", model.UpdateDate == null ? DBNull.Value : model.UpdateDate);
         command.Parameters.AddWithValue("@updatername", model.UpdaterName == null ? DBNull.Value : model.UpdaterName);
         command.Parameters.AddWithValue("@isactive", model.IsActive);
+        command.Parameters.AddWithValue("@passwordHash", model.PasswordHash);
+        command.Parameters.AddWithValue("@roleName", model.RoleName);
         await command.ExecuteNonQueryAsync();
     }
 

@@ -96,10 +96,29 @@ public class UserQueryRepository : Repository, IUserQueryRepository
         throw new NotImplementedException();
     }
 
-    public IQueryable<User> GetWhere()
+    public async Task<User> CheckUserNameAndPassword(string userName)
     {
-        throw new NotImplementedException();
+        var command = CreateCommand("SELECT *  FROM Users WHERE UserName = @UserName");
+
+        command.Parameters.AddWithValue("@UserName", userName);
+
+        using (var reader = command.ExecuteReader())
+        {
+            if (reader.Read())
+            {
+                var user = new User
+                {
+                    UserName = reader["UserName"] != DBNull.Value ? reader["UserName"].ToString() : string.Empty,
+                    PasswordHash = reader["PasswordHash"] != DBNull.Value ? reader["PasswordHash"].ToString() : string.Empty,
+                    RoleName = reader["RoleName"] != DBNull.Value ? reader["RoleName"].ToString() : string.Empty
+                };
+
+                return user;
+            }
+        }
+
+        return null;
     }
 
-   
+
 }

@@ -10,6 +10,7 @@ public  class User :EntityBase
     public string Name { get; set; }
     public string SurName { get; set; }
     public string Photo { get; set; }
+    public string RoleName { get; set; }
     public string PasswordHash { get; set; } = string.Empty;
     public int DepartmanId { get; set; }
 }
