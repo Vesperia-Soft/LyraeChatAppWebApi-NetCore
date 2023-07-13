@@ -17,64 +17,48 @@ public class AuthController : ControllerBase
     public static User user = new User();
 
     private readonly IConfiguration _configuration;
-    private readonly IUserService _userService;
+    private readonly IAuthService _authService;
+    private readonly IJwtService _jwtService;
 
-    public AuthController(IConfiguration configuration, IUserService userService)
+    public AuthController(IConfiguration configuration, IAuthService authService, IJwtService jwtService)
     {
         _configuration = configuration;
-        _userService = userService;
+        _authService = authService;
+        _jwtService = jwtService;
     }
 
     [HttpPost("[action]")]
-    public IActionResult Register([FromBody] CreateUserModel request)
+    public async Task<IActionResult> Register([FromBody] CreateUserModel request)
     {
         string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.PasswordHash);
         request.PasswordHash = passwordHash;
-        _userService.CreateUsers(request);
+        var checkUserName = await _authService.CheckDatabaseForUser(request.UserName);
+        if (checkUserName == true)
+        {
+            return BadRequest("There is an error in the sent data.");
+        }
+        await _authService.CreateUsers(request);
 
-        return Ok("Kayıt Başarılı") ;
+        return Ok("Kayıt Başarılı");
     }
 
     [HttpPost("[action]")]
-public async Task<IActionResult> Login([FromBody] UserDto request)
-{
-   
-    var checkUser = await _userService.CheckUser(request.UserName);
-
-    if (checkUser == null)
+    public async Task<IActionResult> Login([FromBody] UserDto request)
     {
-        return BadRequest("User Not Found");
-    }
-    if (!BCrypt.Net.BCrypt.Verify(request.Password, checkUser.PasswordHash))
-    {
-        return BadRequest("Wrong Password");
-    }
 
-    string token = CreateToken(checkUser);
+        var checkUser = await _authService.CheckByUser(request.UserName);
 
-    return Ok(token);
-}
-    private string CreateToken(User user)
-    {
-        List<Claim> claims = new List<Claim>
+        if (checkUser == null)
         {
-            new Claim(ClaimTypes.Name,user.UserName),
-            new Claim(ClaimTypes.Role,user.RoleName),
-        };
+            return BadRequest("User Not Found");
+        }
+        if (!BCrypt.Net.BCrypt.Verify(request.Password, checkUser.PasswordHash))
+        {
+            return BadRequest("Wrong Password");
+        }
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Token").Value!));
+        string token = _jwtService.CreateToken(checkUser);
 
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-        var token = new JwtSecurityToken(
-            claims: claims,
-            expires: DateTime.Now.AddDays(1),
-            signingCredentials: creds
-            );
-
-        var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-        return jwt;
-
-
+        return Ok(token);
     }
-
 }

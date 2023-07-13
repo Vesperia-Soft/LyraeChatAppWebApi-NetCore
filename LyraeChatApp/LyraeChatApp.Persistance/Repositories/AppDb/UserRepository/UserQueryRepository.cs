@@ -120,5 +120,19 @@ public class UserQueryRepository : Repository, IUserQueryRepository
         return null;
     }
 
+    public async Task<bool> CheckDatabaseForUserName(string userName)
+    {
+        var command = CreateCommand("SELECT COUNT(*) FROM Users WHERE UserName = @userName");
 
+        command.Parameters.AddWithValue("@userName", userName);
+        var result = await command.ExecuteScalarAsync();
+
+        int count;
+        if (int.TryParse(result?.ToString(), out count))
+        {
+            return count > 0;
+        }
+
+        return false;
+    }
 }

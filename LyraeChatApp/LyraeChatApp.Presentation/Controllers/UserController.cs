@@ -1,10 +1,12 @@
 ﻿using LyraeChatApp.Application.Services;
 using LyraeChatApp.Domain.Models.HelperModels;
 using LyraeChatApp.Domain.Models.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace LyraeChatApp.Presentation.Controllers;
-
+[Authorize(Roles = "Admin")]
 [ApiController]
 [Route("[controller]")]
 public class UserController : ControllerBase
@@ -30,13 +32,6 @@ public class UserController : ControllerBase
         return Ok(
             _userService.Get(id)
         );
-    }
-
-    [HttpPost("[action]")]
-    public async Task<IActionResult> Create(CreateUserModel userModel)
-    {
-        await _userService.CreateUsers(userModel);
-        return Ok(userModel);
     }
 
     [HttpPut("[action]")]

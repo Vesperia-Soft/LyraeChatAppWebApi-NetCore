@@ -1,8 +1,10 @@
 using LyraeChatApp.Application.Services;
 using LyraeChatApp.Domain.UnitOfWork;
+using LyraeChatApp.Infrastructure.Jwt;
 using LyraeChatApp.Persistance.Mapping;
 using LyraeChatApp.Persistance.Service;
 using LyraeChatApp.Persistance.UnitOfWorkSql;
+using LyraeChatApp.Presentation.Configurations.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
@@ -24,6 +26,7 @@ builder.Services.AddSwaggerGen(options =>
 
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
+
 builder.Services.AddAuthentication().AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -35,19 +38,11 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
                 builder.Configuration.GetSection("Jwt:Token").Value!))
     };
 });
-builder.Services.AddTransient<IUnitOfWork, UnitOfWorkSqlServer>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IDepartmentService, DepartmentService>();
-builder.Services.AddScoped<IRoomService, RoomService>();
-builder.Services.AddScoped<IMessageService, MessageService>();
-builder.Services.AddScoped<ILogService,LogService>();
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.JwtServiceCollections();
+builder.Services.ApplicationServiceConfigurations();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
