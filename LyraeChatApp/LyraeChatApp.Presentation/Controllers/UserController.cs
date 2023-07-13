@@ -29,10 +29,12 @@ public class UserController : ControllerBase
     [HttpGet("{id}")]
     public ActionResult<IEnumerable<string>> Get(int id)
     {
+      
         return Ok(
             _userService.Get(id)
         );
     }
+
 
     [HttpPut("[action]")]
     public IActionResult Update(User user)
@@ -47,5 +49,36 @@ public class UserController : ControllerBase
         _userService.RemoveUsers(id);
         return Ok();
     }
+
+    #region Helpers
+    [NonAction]
+    public IActionResult GetImage(string fileName)
+    {
+        string path = "./Content/Images/" + fileName;
+        byte[] fileBytes = System.IO.File.ReadAllBytes(path);
+
+        string mimeType = GetMimeType(fileName); 
+
+        return File(fileBytes, mimeType);
+    }
+
+    private string GetMimeType(string fileName)
+    {
+        string ext = Path.GetExtension(fileName);
+
+        switch (ext.ToLower())
+        {
+            case ".jpg":
+            case ".jpeg":
+                return "image/jpeg";
+            case ".png":
+                return "image/png";
+            case ".gif":
+                return "image/gif";
+            default:
+                return "application/octet-stream";
+        }
+    }
+    #endregion
 
 }
