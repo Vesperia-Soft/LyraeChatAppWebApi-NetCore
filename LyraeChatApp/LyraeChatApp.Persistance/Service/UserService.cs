@@ -23,21 +23,7 @@ public class UserService : IUserService
         {
             var result = context.Repositories.userQueryRepository.CheckUserNameAndPassword(userName);
 
-
             return result;
-        }
-    }
-
-    public async Task CreateUsers(CreateUserModel user)
-    {
-        using (var context = _unitOfWork.Create())
-        {
-            var checkUser = CheckUser(user.UserName);
-            if (checkUser != null) throw new Exception("Bu kullanıcı adı zaten kullanımda");
-
-            var userEntity = _mapper.Map<User>(user);
-            await context.Repositories.userCommandRepository.AddAsync(userEntity);
-            context.SaveChanges();
         }
     }
 

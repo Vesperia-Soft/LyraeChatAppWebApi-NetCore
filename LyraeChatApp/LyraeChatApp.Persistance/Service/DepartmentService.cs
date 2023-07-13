@@ -3,6 +3,7 @@ using LyraeChatApp.Application.Services;
 using LyraeChatApp.Domain.Helpers;
 using LyraeChatApp.Domain.Models.Department;
 using LyraeChatApp.Domain.Models.HelperModels;
+using LyraeChatApp.Domain.Models.User;
 using LyraeChatApp.Domain.UnitOfWork;
 
 namespace LyraeChatApp.Persistance.Service;
@@ -116,3 +117,4 @@ public sealed class DepartmentService : IDepartmentService
         }
     }
 }
+
