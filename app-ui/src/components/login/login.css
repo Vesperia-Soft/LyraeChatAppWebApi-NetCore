@@ -1,7 +1,7 @@
-.wrapper {
+/* .wrapper {
     max-width: 350px;
     min-height: 500px;
-    margin: 80px auto;
+    margin: 20vh auto;
     padding: 40px 30px 30px 30px;
     background-color: #ecf0f3;
     border-radius: 15px;
@@ -39,16 +39,13 @@
     outline: none;
     background: none;
     font-size: 1.2rem;
-    color: #666;
     padding: 10px 15px 10px 10px;
-    /* border: 1px solid red; */
 }
 
 .wrapper .form-field {
     padding-left: 10px;
     margin-bottom: 20px;
     border-radius: 20px;
-    box-shadow: inset 8px 8px 8px #cbced1, inset -8px -8px 8px #fff;
 }
 
 .wrapper .form-field .fas {
@@ -86,4 +83,47 @@
         margin: 30px 20px;
         padding: 40px 15px 15px 15px;
     }
+} */
+
+.wrapper{
+    background-color: #F7E6C4;
+    width: 50vh;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.wrapper > form > button{
+    width: 100% !important;
+}
+
+img{
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-top: 120px;
+}
+
+.form-field{
+    background-color: #F1C376;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 20px;
+}
+
+input{
+    margin-left: 15px !important;
+    height: 35px;
+    padding: 15px;
+    outline: none;
+    border: none;
+    border-radius: 10px;
+}
+
+.name{
+    font-weight: 800 !important;
+    font-size: 48px;
 }
