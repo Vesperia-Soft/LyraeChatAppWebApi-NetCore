@@ -3,10 +3,12 @@ using LyraeChatApp.Domain.Models.Department;
 using LyraeChatApp.Domain.Models.HelperModels;
 using LyraeChatApp.Domain.Models.Room;
 using LyraeChatApp.Persistance.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace LyraeChatApp.Presentation.Controllers;
-
+[Authorize(Roles = "Admin")]
 [ApiController]
 [Route("[controller]")]
 public class RoomController :ControllerBase

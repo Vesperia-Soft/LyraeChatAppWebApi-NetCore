@@ -26,11 +26,16 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("[action]")]
-    public IActionResult Register([FromBody] CreateUserModel request)
+    public async Task<IActionResult> Register([FromBody] CreateUserModel request)
     {
         string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.PasswordHash);
         request.PasswordHash = passwordHash;
-        _userService.CreateUsers(request);
+       var checkUserName = await _userService.CheckUserName(request.UserName);
+        if (checkUserName == true)
+        {
+            return BadRequest("There is an error in the sent data.");
+        }
+       await  _userService.CreateUsers(request);
 
         return Ok("Kayıt Başarılı") ;
     }

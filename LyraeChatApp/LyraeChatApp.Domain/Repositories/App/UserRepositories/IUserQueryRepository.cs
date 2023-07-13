@@ -8,6 +8,7 @@ public interface IUserQueryRepository
 {
     PaginationHelper<UserListModel> GetAll(int pageNumber, int pageSize);
     Task<User> CheckUserNameAndPassword(string userName);
+    Task<bool> CheckDatabaseForUserName(string userName);
     Task<User> GetById(int Id);
     Task<User> GetFirstByExpression();
     Task<bool> CheckUserId(int userId);
