@@ -1,14 +1,8 @@
 .nav{
-    background-color: #2D4356 !important;
     width: 100%;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    font-size: 26px;
+    background-color: #2D4356;
 }
 
-.avatar{
-    width: 75px;
-    height: 75px;
-    border-radius: 50%;
+.hamburger{
+    color: #2D4356;
 }
