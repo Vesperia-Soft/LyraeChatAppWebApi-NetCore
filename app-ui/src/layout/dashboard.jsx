@@ -5,21 +5,23 @@ import Sidebar from '../components/sidebar/sidebar';
 import Navbar from '../components/navbar/navbar';
 import Home from '../components/home/home';
 import Login from './login'
+import Message from '../pages/message';
 
 export default function Dashboard(props) {
     return (
-        <Container fluid style={{ padding: '4px', margin: '0px' }}>
-            <Row style={{ height: '98vh' }}>
-                <div className='sidebar-col' style={{ padding: '0px', width: '80px', margin: '0px', zIndex: '9999', position: 'fixed', height: '100vh' }}>
-                    <Sidebar />
-                </div>
-                <Col>
+        <Container fluid className='m-0 p-0'>
+            <Row>
+                <div className='m-0 p-0'>  
                     <Navbar />
+                </div>
+                <Col md={1} className='m-0 p-0'>
+                    <Sidebar />
                 </Col>
-                <Col md={11} style={{ flexGrow: '1', marginTop: '50px', left: window.innerWidth > 976 ? '80px' : '0px', padding: '20px', alignItems: 'center', justifyContent: 'center' }}>
+                <Col md={11} className='m-0 p-0'>
                     <Routes>
                         <Route exact path="/" element={<Home />} />
                         <Route exact path="/login" element={<Login />} />
+                        <Route exact path="/message" element={<Message />} />
                     </Routes>
                 </Col>
             </Row>
