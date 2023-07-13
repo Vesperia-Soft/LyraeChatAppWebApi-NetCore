@@ -17,7 +17,7 @@ public class AuthController : ControllerBase
     public static User user = new User();
 
     private readonly IConfiguration _configuration;
-   private readonly IAuthService _authService;
+    private readonly IAuthService _authService;
     private readonly IJwtService _jwtService;
 
     public AuthController(IConfiguration configuration, IAuthService authService, IJwtService jwtService)
@@ -32,34 +32,33 @@ public class AuthController : ControllerBase
     {
         string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.PasswordHash);
         request.PasswordHash = passwordHash;
-       var checkUserName = await _authService.CheckDatabaseForUser(request.UserName);
+        var checkUserName = await _authService.CheckDatabaseForUser(request.UserName);
         if (checkUserName == true)
         {
             return BadRequest("There is an error in the sent data.");
         }
-       await _authService.CreateUsers(request);
+        await _authService.CreateUsers(request);
 
-        return Ok("Kayıt Başarılı") ;
+        return Ok("Kayıt Başarılı");
     }
 
     [HttpPost("[action]")]
-public async Task<IActionResult> Login([FromBody] UserDto request)
-{
-   
-    var checkUser = await _authService.CheckByUser(request.UserName);
-
-    if (checkUser == null)
+    public async Task<IActionResult> Login([FromBody] UserDto request)
     {
-        return BadRequest("User Not Found");
+
+        var checkUser = await _authService.CheckByUser(request.UserName);
+
+        if (checkUser == null)
+        {
+            return BadRequest("User Not Found");
+        }
+        if (!BCrypt.Net.BCrypt.Verify(request.Password, checkUser.PasswordHash))
+        {
+            return BadRequest("Wrong Password");
+        }
+
+        string token = _jwtService.CreateToken(checkUser);
+
+        return Ok(token);
     }
-    if (!BCrypt.Net.BCrypt.Verify(request.Password, checkUser.PasswordHash))
-    {
-        return BadRequest("Wrong Password");
-    }
-
-    string token = _jwtService.CreateToken(checkUser);
-
-    return Ok(token);
-}
-
 }
