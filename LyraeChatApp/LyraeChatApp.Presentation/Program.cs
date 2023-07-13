@@ -1,5 +1,6 @@
 using LyraeChatApp.Application.Services;
 using LyraeChatApp.Domain.UnitOfWork;
+using LyraeChatApp.Infrastructure.Jwt;
 using LyraeChatApp.Persistance.Mapping;
 using LyraeChatApp.Persistance.Service;
 using LyraeChatApp.Persistance.UnitOfWorkSql;
@@ -42,6 +43,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<ILogService,LogService>();
+builder.Services.AddScoped<IJwtService,JwtService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

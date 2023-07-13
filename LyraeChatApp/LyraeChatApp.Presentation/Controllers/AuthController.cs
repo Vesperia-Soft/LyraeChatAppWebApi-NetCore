@@ -18,11 +18,13 @@ public class AuthController : ControllerBase
 
     private readonly IConfiguration _configuration;
    private readonly IAuthService _authService;
+    private readonly IJwtService _jwtService;
 
-    public AuthController(IConfiguration configuration, IAuthService authService)
+    public AuthController(IConfiguration configuration, IAuthService authService, IJwtService jwtService)
     {
         _configuration = configuration;
         _authService = authService;
+        _jwtService = jwtService;
     }
 
     [HttpPost("[action]")]
@@ -55,31 +57,9 @@ public async Task<IActionResult> Login([FromBody] UserDto request)
         return BadRequest("Wrong Password");
     }
 
-    string token = CreateToken(checkUser);
+    string token = _jwtService.CreateToken(checkUser);
 
     return Ok(token);
 }
-    private string CreateToken(User user)
-    {
-        List<Claim> claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name,user.UserName),
-            new Claim(ClaimTypes.Role,user.RoleName),
-        };
-
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Token").Value!));
-
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-        var token = new JwtSecurityToken(
-            claims: claims,
-            expires: DateTime.Now.AddDays(1),
-            signingCredentials: creds
-            );
-
-        var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-        return jwt;
-
-
-    }
 
 }
