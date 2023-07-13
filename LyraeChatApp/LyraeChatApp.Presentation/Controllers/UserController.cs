@@ -23,13 +23,14 @@ public class UserController : ControllerBase
     public IActionResult GetAll([FromQuery] PaginationRequest request)
     {
         var users = _userService.GetAllUsers(request);
+
         return Ok(users);
     }
 
     [HttpGet("{id}")]
     public ActionResult<IEnumerable<string>> Get(int id)
     {
-      
+        
         return Ok(
             _userService.Get(id)
         );
@@ -51,7 +52,8 @@ public class UserController : ControllerBase
     }
 
     #region Helpers
-    [NonAction]
+
+    [HttpGet("[action]/{fileName}")]
     public IActionResult GetImage(string fileName)
     {
         string path = "./Content/Images/" + fileName;
