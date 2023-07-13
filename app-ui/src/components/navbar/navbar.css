@@ -1,0 +1,14 @@
+.nav{
+    background-color: #2D4356 !important;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 26px;
+}
+
+.avatar{
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+}
