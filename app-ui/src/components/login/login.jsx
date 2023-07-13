@@ -1,13 +1,27 @@
 import React from 'react';
 import "./login.css";
+import GenericApiService from '../../services/GenericApiService';
+import { useNavigate } from 'react-router-dom';
 
 export default function Navbar() {
     const [userName, setUserName] = React.useState("");
     const [password, setPassword] = React.useState("");
 
-    const handleSubmit = (e) => {
+    const genericApiService = new GenericApiService();
+
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(userName, password);
+        const data = {
+            userName: userName,
+            password: password
+        }
+        await genericApiService.post("/Auth/Login", data);
+
+        if(localStorage.getItem("token").length > 0){
+            navigate('/');
+        }
     };
 
     return (
