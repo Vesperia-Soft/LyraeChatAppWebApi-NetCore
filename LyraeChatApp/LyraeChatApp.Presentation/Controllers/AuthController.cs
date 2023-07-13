@@ -17,12 +17,12 @@ public class AuthController : ControllerBase
     public static User user = new User();
 
     private readonly IConfiguration _configuration;
-    private readonly IUserService _userService;
+   private readonly IAuthService _authService;
 
-    public AuthController(IConfiguration configuration, IUserService userService)
+    public AuthController(IConfiguration configuration, IAuthService authService)
     {
         _configuration = configuration;
-        _userService = userService;
+        _authService = authService;
     }
 
     [HttpPost("[action]")]
@@ -30,12 +30,12 @@ public class AuthController : ControllerBase
     {
         string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.PasswordHash);
         request.PasswordHash = passwordHash;
-       var checkUserName = await _userService.CheckUserName(request.UserName);
+       var checkUserName = await _authService.CheckDatabaseForUser(request.UserName);
         if (checkUserName == true)
         {
             return BadRequest("There is an error in the sent data.");
         }
-       await  _userService.CreateUsers(request);
+       await _authService.CreateUsers(request);
 
         return Ok("Kayıt Başarılı") ;
     }
@@ -44,7 +44,7 @@ public class AuthController : ControllerBase
 public async Task<IActionResult> Login([FromBody] UserDto request)
 {
    
-    var checkUser = await _userService.CheckUser(request.UserName);
+    var checkUser = await _authService.CheckByUser(request.UserName);
 
     if (checkUser == null)
     {

@@ -27,26 +27,6 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<bool> CheckUserName(string userName)
-    {
-        using (var context = _unitOfWork.Create())
-        {
-            var result = await  context.Repositories.userQueryRepository.CheckDatabaseForUserName(userName);
-
-            return result;
-        }
-    }
-
-    public async Task CreateUsers(CreateUserModel user)
-    {
-        using (var context = _unitOfWork.Create())
-        {
-            var userEntity = _mapper.Map<User>(user);
-            await context.Repositories.userCommandRepository.AddAsync(userEntity);
-            context.SaveChanges();
-        }
-    }
-
     public async Task< User> Get(int id)
     {
         using (var context = _unitOfWork.Create())

@@ -35,12 +35,14 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
                 builder.Configuration.GetSection("Jwt:Token").Value!))
     };
 });
-builder.Services.AddTransient<IUnitOfWork, UnitOfWorkSqlServer>();
-builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
-builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddTransient<IUnitOfWork, UnitOfWorkSqlServer>();
 builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<ILogService,LogService>();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(MappingProfile));

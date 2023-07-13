@@ -34,13 +34,6 @@ public class UserController : ControllerBase
         );
     }
 
-    [HttpPost("[action]")]
-    public async Task<IActionResult> Create(CreateUserModel userModel)
-    {
-        await _userService.CreateUsers(userModel);
-        return Ok(userModel);
-    }
-
     [HttpPut("[action]")]
     public IActionResult Update(User user)
     {
