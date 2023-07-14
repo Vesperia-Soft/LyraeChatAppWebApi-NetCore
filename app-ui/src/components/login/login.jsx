@@ -4,28 +4,40 @@ import GenericApiService from '../../services/GenericApiService';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faKey, faUser } from '@fortawesome/free-solid-svg-icons'
+import { toast } from 'react-toastify';
 
 export default function Login() {
     const [userName, setUserName] = React.useState("");
     const [password, setPassword] = React.useState("");
-
     const genericApiService = new GenericApiService();
-
     const navigate = useNavigate();
 
+    const notify = (type, message) => {
+        switch (type) {
+            case 'success':
+                toast.success(message, { position: 'bottom-right' })
+                break;
+            case 'error':
+                toast.error(message, { position: 'bottom-right' })
+                break;
+            default:
+                break;
+        }
+    }
     const handleSubmit = async (e) => {
         e.preventDefault();
         const data = {
             userName: userName,
             password: password
         }
-        await genericApiService.post("/Auth/Login", data);
-
-        if (localStorage.getItem("token").length > 0) {
+        const response = await genericApiService.post("/Auth/Login", data);
+        if (response.status === 200) {
             navigate('/');
+            notify('success', "Giriş Başarılı")
+        }else{
+            notify('error', "Kullanıcı adı veya parola hatalı")
         }
     };
-
     return (
         <div className="wrapper">
             <div className="logo">
@@ -45,8 +57,8 @@ export default function Login() {
                 </div>
                 <button className="btn btn-custom mt-3" type='submit'>Giriş Yap</button>
             </form>
-            <div className="text-center" style={{marginBottom: '120px',marginTop:'15px'}}>
-                <a style={{fontSize: '24px'}} href="/password-recovery">Şifreni mi unuttun?</a>
+            <div className="text-center" style={{ marginBottom: '120px', marginTop: '15px' }}>
+                <a style={{ fontSize: '24px' }} href="/password-recovery">Şifreni mi unuttun?</a>
             </div>
         </div>
     )

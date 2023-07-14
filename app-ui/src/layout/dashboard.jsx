@@ -2,9 +2,9 @@ import React, { useEffect,useState } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { Container, Col, Row } from 'react-bootstrap';
 import Navbar from '../components/navbar/navbar';
-import Home from '../components/home/home';
 import Login from '../components/login/login';
 import PasswordRecovery from '../components/password-recovery/password-recovery';
+import Message from '../components/message/message';
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -17,6 +17,8 @@ export default function Dashboard() {
         token ? setFlag(true) : setFlag(false)
         if (!token && !allowedPaths.includes(path)) {
             navigate('/login');
+        }else if(allowedPaths.includes(path)){
+            setFlag(false)
         }
     }, [navigate]);
 
@@ -29,11 +31,10 @@ export default function Dashboard() {
                         <Navbar />
                         : null
                     }
-                    
                 </div>
                 <Col md={12} className='m-0 p-0 w-100'>
                     <Routes>
-                        <Route exact path="/" element={<Home />} />
+                        <Route exact path="/" element={<Message />} />
                         <Route exact path="/login" element={<Login />} />
                         {/* <Route exact path="/register" element={<Register />} /> */}
                         <Route exact path="/password-recovery" element={<PasswordRecovery />} />
