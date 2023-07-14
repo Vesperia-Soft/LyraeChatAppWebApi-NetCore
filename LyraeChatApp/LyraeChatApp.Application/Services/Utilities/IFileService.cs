@@ -2,4 +2,5 @@
 
 public interface IFileService
 {
+    string GetMimeType(string fileName);
 }
