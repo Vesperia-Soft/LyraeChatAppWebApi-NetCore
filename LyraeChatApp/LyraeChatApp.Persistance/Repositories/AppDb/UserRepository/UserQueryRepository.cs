@@ -135,4 +135,30 @@ public class UserQueryRepository : Repository, IUserQueryRepository
 
         return false;
     }
+
+    public async Task<User> GetByMail(string email)
+    {
+        var command = CreateCommand("SELECT * FROM Users  WHERE Email =@mail");
+
+        command.Parameters.AddWithValue("@mail", email);
+
+        using (var reader = command.ExecuteReader())
+        {
+            reader.Read();
+
+            return new User
+            {
+                Id = reader["Id"] != DBNull.Value ? Convert.ToInt32(reader["Id"]) : 0,
+                UserName = reader["UserName"] != DBNull.Value ? reader["UserName"].ToString() : string.Empty,
+                Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : string.Empty,
+                PhoneNumber = reader["PhoneNumber"] != DBNull.Value ? reader["PhoneNumber"].ToString() : string.Empty,
+                Name = reader["Name"] != DBNull.Value ? reader["Name"].ToString() : string.Empty,
+                SurName = reader["SurName"] != DBNull.Value ? reader["SurName"].ToString() : string.Empty,
+                Photo = reader["Photo"] != DBNull.Value ? reader["Photo"].ToString() : string.Empty,
+                DepartmanId = reader["DepartmanId"] != DBNull.Value ? Convert.ToInt32(reader["DepartmanId"]) : 0,
+                IsActive = reader["IsActive"] != DBNull.Value ? Convert.ToBoolean(reader["IsActive"]) : false
+
+            };
+        }
+    }
 }

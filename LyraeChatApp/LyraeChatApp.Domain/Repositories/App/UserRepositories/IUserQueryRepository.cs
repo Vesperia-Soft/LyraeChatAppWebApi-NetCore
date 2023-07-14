@@ -13,4 +13,5 @@ public interface IUserQueryRepository
     Task<User> GetFirstByExpression();
     Task<bool> CheckUserId(int userId);
     Task<User> GetFirst();
+    Task<User> GetByMail(string email);
 }

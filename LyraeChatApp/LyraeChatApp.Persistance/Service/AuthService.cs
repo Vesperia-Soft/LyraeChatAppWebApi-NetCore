@@ -17,6 +17,17 @@ public class AuthService : IAuthService
         _mapper = mapper;
     }
 
+    public async Task ChangePassword(ChangePasswordModel model)
+    {
+        using (var context = _unitOfWork.Create())
+        {
+            var user = await context.Repositories.userQueryRepository.GetByMail(model.Email);
+            user.PasswordHash = model.NewPassword;
+            context.Repositories.userCommandRepository.UpdatePass(user);
+            context.SaveChanges();
+        }
+    }
+
     public Task<User> CheckByUser(string userName)
     {
         using (var context = _unitOfWork.Create())
