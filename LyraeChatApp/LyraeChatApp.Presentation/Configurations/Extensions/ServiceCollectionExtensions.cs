@@ -1,7 +1,9 @@
 ﻿using LyraeChatApp.Application.Services;
+using LyraeChatApp.Application.Services.Utilities;
 using LyraeChatApp.Domain.UnitOfWork;
 using LyraeChatApp.Persistance.Mapping;
 using LyraeChatApp.Persistance.Service;
+using LyraeChatApp.Persistance.Service.Utilities;
 using LyraeChatApp.Persistance.UnitOfWorkSql;
 
 namespace LyraeChatApp.Presentation.Configurations.Extensions;
@@ -18,6 +20,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRoomService, RoomService>();
         services.AddAutoMapper(typeof(MappingProfile));
         services.AddScoped<ILogService, LogService>();
+        services.AddScoped<IFileService, FileService>();
         services.AddEndpointsApiExplorer();
         services.AddControllers();
 
