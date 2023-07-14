@@ -1,21 +1,42 @@
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import React, { useEffect,useState } from 'react';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { Container, Col, Row } from 'react-bootstrap';
 import Navbar from '../components/navbar/navbar';
 import Home from '../components/home/home';
 import Login from '../components/login/login';
+import PasswordRecovery from '../components/password-recovery/password-recovery';
 
 export default function Dashboard() {
+    const navigate = useNavigate();
+    const [flag, setFlag] = useState(true)
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const path = window.location.pathname;
+        const allowedPaths = ['/login', '/register', '/password-recovery'];
+        token ? setFlag(true) : setFlag(false)
+        if (!token && !allowedPaths.includes(path)) {
+            navigate('/login');
+        }
+    }, [navigate]);
+
     return (
-        <Container fluid className='m-0 p-0' style={{height: '100vh'}}>
+        <Container fluid className='m-0 p-0' style={{ height: '100vh' }}>
             <Row>
-                <div className='m-0 p-0'>  
-                    <Navbar />
+                <div className='m-0 p-0'>
+                    {
+                        flag ? 
+                        <Navbar />
+                        : null
+                    }
+                    
                 </div>
-                <Col md={12} className='m-0 p-0'>
+                <Col md={12} className='m-0 p-0 w-100'>
                     <Routes>
                         <Route exact path="/" element={<Home />} />
                         <Route exact path="/login" element={<Login />} />
+                        {/* <Route exact path="/register" element={<Register />} /> */}
+                        <Route exact path="/password-recovery" element={<PasswordRecovery />} />
                     </Routes>
                 </Col>
             </Row>

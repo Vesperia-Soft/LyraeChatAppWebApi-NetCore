@@ -76,6 +76,16 @@ public class UserCommandRepository : Repository, IUserCommandRepository
         command.ExecuteNonQuery();
     }
 
+    public void UpdatePass(User entity)
+    {
+        var query = "update Users set PasswordHash=@pass where Email=@email";
+        var command = CreateCommand(query);
+        command.Parameters.AddWithValue("@pass", entity.PasswordHash);
+        command.Parameters.AddWithValue("@email", entity.Email);
+
+        command.ExecuteNonQuery();
+    }
+
     public void UpdateRange(IEnumerable<User> model)
     {
         throw new NotImplementedException();

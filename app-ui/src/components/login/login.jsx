@@ -1,13 +1,29 @@
 import React from 'react';
 import "./login.css";
+import GenericApiService from '../../services/GenericApiService';
+import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faKey, faUser } from '@fortawesome/free-solid-svg-icons'
 
-export default function Navbar() {
+export default function Login() {
     const [userName, setUserName] = React.useState("");
     const [password, setPassword] = React.useState("");
 
-    const handleSubmit = (e) => {
+    const genericApiService = new GenericApiService();
+
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(userName, password);
+        const data = {
+            userName: userName,
+            password: password
+        }
+        await genericApiService.post("/Auth/Login", data);
+
+        if (localStorage.getItem("token").length > 0) {
+            navigate('/');
+        }
     };
 
     return (
@@ -20,17 +36,17 @@ export default function Navbar() {
             </div>
             <form className="p-3 mt-3" onSubmit={handleSubmit}>
                 <div className="form-field d-flex align-items-center">
-                    <span className="far fa-user"></span>
+                    <FontAwesomeIcon style={{ fontSize: 24 }} icon={faUser} />
                     <input type="text" name="userName" id="userName" placeholder="Kullanıcı Adı" value={userName} onChange={(e) => setUserName(e.target.value)} />
                 </div>
                 <div className="form-field d-flex align-items-center">
-                    <span className="fas fa-key"></span>
+                    <FontAwesomeIcon style={{ fontSize: 24 }} icon={faKey} />
                     <input type="password" name="password" id="pwd" placeholder="Şifre" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
                 <button className="btn btn-custom mt-3" type='submit'>Giriş Yap</button>
             </form>
-            <div className="text-center">
-                <a style={{ fontSize: '18px' }} href="#">Şifreni mi unuttun?</a>
+            <div className="text-center" style={{marginBottom: '120px',marginTop:'15px'}}>
+                <a style={{fontSize: '24px'}} href="/password-recovery">Şifreni mi unuttun?</a>
             </div>
         </div>
     )

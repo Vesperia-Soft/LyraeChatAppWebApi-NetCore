@@ -1,8 +1,29 @@
-.nav{
-    width: 100%;
+.offcanvas-body,
+.offcanvas-header {
+    background-color: #2D4356;
+    color: #fff;
+}
+
+.btn-close {
+    background-color: #fff !important;
+}
+
+.nav {
     background-color: #2D4356;
 }
 
-.hamburger{
+.hamburger {
     color: #2D4356;
+}
+
+.offcanvas-body {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.icon{
+    transition: .7s all;
+}
+.icon:hover {
+     color: #FFC26F !important;
 }

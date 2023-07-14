@@ -71,6 +71,14 @@ public class AuthController : ControllerBase
         return Ok(token);
     }
 
+    [HttpPost("[action]")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
+    {
+        model.NewPassword = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
+        await _authService.ChangePassword(model);
+        return Ok();
+    }
+
     #region Helpers
     [NonAction]
     public async Task<string> UploadImage(IFormFile image)

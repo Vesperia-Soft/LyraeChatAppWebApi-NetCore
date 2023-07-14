@@ -7,4 +7,5 @@ public  interface IAuthService
     Task<User> CheckByUser(string userName);
     Task<bool> CheckDatabaseForUser(string userName);
     Task CreateUsers(CreateUserModel userModel);
+    Task ChangePassword(ChangePasswordModel model);
 }
