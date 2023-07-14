@@ -9,9 +9,13 @@ namespace LyraeChatApp.Persistance.Service;
 
 public class UserService : IUserService
 {
+
     private IUnitOfWork _unitOfWork;
     private IMapper _mapper;
-    public UserService(IUnitOfWork unitOfWork, IMapper mapper)
+    public UserService(
+        IUnitOfWork unitOfWork,
+        IMapper mapper
+        )
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -27,14 +31,14 @@ public class UserService : IUserService
         }
     }
 
-    public async Task< User> Get(int id)
+    public async Task<User> Get(int id)
     {
         using (var context = _unitOfWork.Create())
         {
-            var checkUserId = await  context.Repositories.userQueryRepository.CheckUserId(id);
+            var checkUserId = await context.Repositories.userQueryRepository.CheckUserId(id);
 
-          if (checkUserId == false)
-              throw new Exception($"bu {id} değeri Id Bulunamadı");
+            if (checkUserId == false)
+                throw new Exception($"bu {id} değeri Id Bulunamadı");
             var result = context.Repositories.userQueryRepository.GetById(id).Result;
 
             return result;

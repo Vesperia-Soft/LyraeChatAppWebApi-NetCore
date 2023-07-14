@@ -1,6 +1,8 @@
 ﻿using LyraeChatApp.Application.Services;
+using LyraeChatApp.Application.Services.Utilities;
 using LyraeChatApp.Domain.Models.HelperModels;
 using LyraeChatApp.Domain.Models.User;
+using LyraeChatApp.Persistance.Service.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
@@ -11,11 +13,15 @@ namespace LyraeChatApp.Presentation.Controllers;
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
-    private IUserService _userService;
+    private readonly IUserService _userService;
+    private readonly IFileService _fileService;
 
-    public UserController(IUserService userService)
+    public UserController(
+        IUserService userService,
+        IFileService fileService)
     {
         _userService = userService;
+        _fileService = fileService;
     }
 
 
@@ -23,16 +29,19 @@ public class UserController : ControllerBase
     public IActionResult GetAll([FromQuery] PaginationRequest request)
     {
         var users = _userService.GetAllUsers(request);
+
         return Ok(users);
     }
 
     [HttpGet("{id}")]
     public ActionResult<IEnumerable<string>> Get(int id)
     {
+        
         return Ok(
             _userService.Get(id)
         );
     }
+
 
     [HttpPut("[action]")]
     public IActionResult Update(User user)
@@ -47,5 +56,8 @@ public class UserController : ControllerBase
         _userService.RemoveUsers(id);
         return Ok();
     }
+
+    #region Helpers
+    #endregion
 
 }

@@ -1,4 +1,4 @@
-﻿using LyraeChatApp.Application.Services;
+﻿using LyraeChatApp.Application.Services.Utilities;
 using LyraeChatApp.Infrastructure.Jwt;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
