@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faKey, faUser } from '@fortawesome/free-solid-svg-icons'
 import emailjs from 'emailjs-com';
 import { useNavigate } from 'react-router-dom';
-import GenericApiService from '../../services/GenericApiService';
+import { toast } from 'react-toastify';
 
 export default function PasswordRecovery() {
     const generateCode = () => {
@@ -25,7 +25,6 @@ export default function PasswordRecovery() {
     const [code, setCode] = useState("");
     const [userName, setUserName] = useState("");
     const [userCode, setUserCode] = useState("");
-    const [infoText, setInfoText] = useState("");
     const [visible, setVisible] = useState(true);
     const [visibleNewPass, setVisibleNewPass] = useState(false);
     const [newPass, setNewPass] = useState("");
@@ -33,38 +32,51 @@ export default function PasswordRecovery() {
 
     const genericApiService = new GenericApiService();
 
+    const notify = (type,message) => {
+        switch (type) {
+            case 'success':
+                toast.success(message, { position: 'bottom-right' })
+                break;
+            case 'error':
+                toast.error(message, { position: 'bottom-right' })
+                break;
+            default:
+                break;
+        }
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         setVisible(false);
-        setInfoText("Doğrulama kodu mail adresinize gönderildi.");
+        notify('success',"Doğrulama kodu mail adresinize gönderildi")
         sendEmail()
     };
 
     const handleConfirm = async (e) => {
         e.preventDefault();
         if (userCode === code) {
-            setInfoText("");
             setVisibleNewPass(true)
         } else {
-            setInfoText("Doğrulama kodu hatalı.");
+            notify('error',"Doğrulama kodu hatalı")
         }
     };
 
     const handleSave = async (e) => {
         e.preventDefault();
-        if(newPass.length > 0 && newPass === renewPass){
+        if (newPass.length > 0 && newPass === renewPass) {
             const data = {
-                email:userName,
-                newPass:newPass
+                email: userName,
+                newPassword: newPass
             }
+            const response = genericApiService.post("/Auth/ChangePassword", data);
+            if ((await response).status === 200) {
+                notify('success',"Şifre Başarıyla değiştirildi giriş sayfasına yönlendiriliyorsunuz")
+                navigate("/login")
+            } else {
 
-            apiService = new GenericApiService();
-
-            apiService.post("Auth/PasswordChange");
-
-            navigate("/login")
-        }else{
-            setInfoText("Paralolar eşleşmedi.");
+            }
+        } else {
+            notify('error',"Parolalar eşleşmedi")
         }
     };
 
@@ -82,7 +94,7 @@ export default function PasswordRecovery() {
         //     .catch((error) => {
         //         console.error('E-posta gönderme hatası:', error);
         //     });
-        console.log("giden kod: " + code);
+        console.log(code);
     };
 
     return (
@@ -126,7 +138,6 @@ export default function PasswordRecovery() {
             <div className="text-center" style={{ marginBottom: '120px', marginTop: '15px' }}>
                 <a style={{ fontSize: '24px' }} href="/login">Giriş Yap</a>
             </div>
-            <span>{infoText}</span>
         </div>
     )
 }

@@ -1,0 +1,15 @@
+.avatar{
+    width: 100px;
+    height: 100px;
+    margin: 0 !important;
+}
+
+.card-body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card.w-100{
+    margin-top: 50px;
+}
