@@ -11,18 +11,19 @@ public class RoomCommandRepository : Repository,IRoomCommandRepository
         this._context= context;
         this._transaction= transaction;
     }
-    public async Task AddAsync(Room model)
+    public async Task<int> AddAsync(Room model)
     {
-        var query = "INSERT INTO Room (Name, CreatedDate, CreatorName,  IsActive) " +
-                "VALUES (@name, @createddate, @creatorname, @isactive);" +
-                "SELECT SCOPE_IDENTITY()";
+        var query = "INSERT INTO Room (Name, CreatedDate, CreatorName, IsActive) " +
+                "OUTPUT INSERTED.ID " +
+                "VALUES (@name, @createddate, @creatorname, @isactive)";
         var command = CreateCommand(query);
         command.Parameters.AddWithValue("@name", model.Name);
         command.Parameters.AddWithValue("@createddate", model.CreatedDate);
         command.Parameters.AddWithValue("@creatorname", model.CreatorName);
         command.Parameters.AddWithValue("@isactive", model.IsActive);
-        await command.ExecuteNonQueryAsync();
+        var insertedId = (int)await command.ExecuteScalarAsync();
 
+        return insertedId;
     }
 
     public Task AddRangeAsync(IEnumerable<Room> model)

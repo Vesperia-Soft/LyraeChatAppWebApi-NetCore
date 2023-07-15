@@ -13,25 +13,29 @@ public class RoomService : IRoomService
     private readonly IMapper _mapper;
     private readonly ILogService _logService;
 
-    public RoomService(IUnitOfWork unitOfWork, IMapper mapper)
+    public RoomService(IUnitOfWork unitOfWork, IMapper mapper, ILogService logService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _logService = logService;
     }
 
-    public async Task CreateRoom(CreateRoomModel model)
+    public async Task<int> CreateRoom(CreateRoomModel model)
     {
-       using(var context = _unitOfWork.Create())
+        using (var context = _unitOfWork.Create())
         {
             try
             {
                 var entity = _mapper.Map<Room>(model);
-                await context.Repositories.roomCommandRepository.AddAsync(entity);
+                var insertedId = (int)await context.Repositories.roomCommandRepository.AddAsync(entity);
 
                 context.SaveChanges();
-            }catch(Exception ex)
+
+                return insertedId;
+            }
+            catch (Exception ex)
             {
-                _logService.LogToDb($"Oda oluşturulurken hata oluştu : {ex.Message}", "Admin");
+                _logService.LogToDb($"Oda oluşturulurken hata oluştu: {ex.Message}", "Admin");
                 throw;
             }
         }

@@ -37,8 +37,8 @@ public class RoomController :ControllerBase
     [HttpPost("[action]")]
     public async Task<IActionResult> Create(CreateRoomModel model)
     {
-        await _roomService.CreateRoom(model);
-        return Ok(model);
+      var roomId=  await _roomService.CreateRoom(model);
+        return Ok(roomId);
     }
 
     [HttpPut("[action]")]

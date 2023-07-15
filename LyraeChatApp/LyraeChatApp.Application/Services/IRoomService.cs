@@ -10,7 +10,7 @@ public interface IRoomService
 {
     Task<Room> Get(int id);
     PaginationHelper<RoomListModel> GetAllRoom(PaginationRequest request);
-    Task CreateRoom(CreateRoomModel model);
+    Task<int> CreateRoom(CreateRoomModel model);
     void UpdateRoom(UpdateRoomModel model);
     Task RemoveRoom(int id);
 }
