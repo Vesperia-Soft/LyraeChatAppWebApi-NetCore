@@ -36,9 +36,18 @@ builder.Services.JwtServiceCollections();
 builder.Services.ApplicationServiceConfigurations();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IDictionary<string, UserConnection>>(opts=> new Dictionary<string, UserConnection>());
+
 builder.Services.AddCors(options =>
-             options.AddDefaultPolicy(builder =>
-             builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
 
 var app = builder.Build();
 

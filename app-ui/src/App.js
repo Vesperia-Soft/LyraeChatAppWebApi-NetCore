@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Lobby from './components/Lobbyy';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { useState } from 'react';
+import Chat from './components/Chat';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
 	// 	</div>
 	// );
 	const [connection, setConnection] = useState();
+	const [messages, setMessages] = useState([]);
 	const joinRoom = async (user, room) => {
 		try {
 			const connection = new HubConnectionBuilder()
@@ -29,11 +31,11 @@ function App() {
 				.build();
 
 			connection.on("ReceiveMessage", (user, message) => {
-				console.log('message received', message);
+				setMessages(messages => [...messages, { user, message }]);
 			});
 
 			await connection.start();
-			await connection.invoke("joinRoom", {user, room});
+			await connection.invoke("joinRoom", { user, room });
 			setConnection(connection)
 		}
 		catch (e) {
@@ -45,7 +47,10 @@ function App() {
 		<div className='app'>
 			<h2>MyChat</h2>
 			<hr className='line' />
-			<Lobby joinRoom={joinRoom} />
+			{!connection ?
+				<Lobby joinRoom={joinRoom} />
+				: <Chat messages={messages} />
+				}
 		</div>
 	)
 }
