@@ -364,6 +364,5 @@ FodyWeavers.xsd
 /LyraeChatApp/LyraeChatApp.Presentation/Content
 /app-ui/node_modules/.bin/
 /app-ui/node_modules/.bin/ansi-html.ps1
-/app-ui/package.json
-/app-ui/node_modules/.package-lock.json
-/app-ui/package-lock.json
+
+
