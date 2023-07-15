@@ -19,6 +19,8 @@ public class ChatHub : Hub
         {
             _connection.Remove(Context.ConnectionId);
             Clients.Group(userConnection.Room).SendAsync("ReceiveMessage", _botUser, $"{userConnection.User} has left");
+
+            SendConnectedUsers(userConnection.Room);
         }
 
         return base.OnDisconnectedAsync(exception);
@@ -38,6 +40,8 @@ public class ChatHub : Hub
         _connection[Context.ConnectionId] = userConnection;
 
         await Clients.Group(userConnection.Room).SendAsync("ReceiveMessage", _botUser, $"{userConnection.User} has joined {userConnection.Room}");
+
+        await SendConnectedUsers(userConnection.Room);
     }
 
 
