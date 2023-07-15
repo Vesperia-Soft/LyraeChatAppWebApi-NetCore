@@ -14,7 +14,7 @@ function Message() {
     return (
         <Container fluid>
             <Row>
-                <Col sm={2} className="d-flex flex-column justify-content-around align-items-center " style={{backgroundColor:'#2D4356',height:'calc(100vh - 50px)',maxHeight:'calc(100vh - 50px)', overflowY:'auto'}}>
+                <Col sm={3} className="d-flex flex-column justify-content-around align-items-center " style={{backgroundColor:'#2D4356',height:'calc(100vh - 50px)',maxHeight:'calc(100vh - 50px)', overflowY:'auto'}}>
                     <div role="button" className="card w-100" onClick={() => handleClickUser({name:"Batuhan Topcu"})}>
                         <div className="card-body">
                             Batuhan Topcu <img alt="icon" className="avatar" src="https://static.vecteezy.com/system/resources/previews/009/734/564/original/default-avatar-profile-icon-of-social-media-user-vector.jpg"></img>
@@ -51,7 +51,7 @@ function Message() {
                         </div>
                     </div>
                 </Col>
-                <Col sm={10} className="message-area">
+                <Col sm={9} className="message-area">
                     <h1>
                         {selectedUser.name}
                     </h1>
