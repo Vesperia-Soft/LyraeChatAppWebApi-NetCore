@@ -23,7 +23,7 @@ public class AuthService : IAuthService
         {
             var user = await context.Repositories.userQueryRepository.GetByMail(model.Email);
             user.PasswordHash = model.NewPassword;
-            context.Repositories.userCommandRepository.UpdatePass(user);
+            context.Repositories.userCommandRepository.UpdatePassword(user);
             context.SaveChanges();
         }
     }
