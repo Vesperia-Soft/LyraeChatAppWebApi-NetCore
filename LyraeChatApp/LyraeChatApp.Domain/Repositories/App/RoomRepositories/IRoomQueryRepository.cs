@@ -1,6 +1,5 @@
 ﻿using LyraeChatApp.Domain.Helpers;
 using LyraeChatApp.Domain.Models.Room;
-using LyraeChatApp.Domain.Models.User;
 
 namespace LyraeChatApp.Domain.Repositories.App.RoomRepositories;
 
@@ -12,4 +11,5 @@ public interface IRoomQueryRepository
     Task<Room> GetFirstByExpression();
     Task<bool> CheckRoomId(int roomId);
     Task<Room> GetFirst();
+    Task<int> GetByName(string name);
 }

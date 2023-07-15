@@ -35,7 +35,7 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
 builder.Services.JwtServiceCollections();
 builder.Services.ApplicationServiceConfigurations();
 builder.Services.AddSignalR();
-builder.Services.AddSingleton<IDictionary<string, UserConnection>>(opts=> new Dictionary<string, UserConnection>());
+builder.Services.AddSingleton<IDictionary<string, UserConnection>>(opts => new Dictionary<string, UserConnection>());
 
 builder.Services.AddCors(options =>
 {
@@ -43,6 +43,10 @@ builder.Services.AddCors(options =>
     {
         builder.WithOrigins("http://localhost:3001")
             .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+        builder.WithOrigins("http://localhost:3000")
+        .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
     });

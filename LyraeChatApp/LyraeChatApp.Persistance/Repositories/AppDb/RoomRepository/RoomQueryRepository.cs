@@ -3,6 +3,7 @@ using LyraeChatApp.Domain.Models.Department;
 using LyraeChatApp.Domain.Models.Room;
 using LyraeChatApp.Domain.Repositories.App.RoomRepositories;
 using System.Data.SqlClient;
+using System.Xml.Linq;
 
 namespace LyraeChatApp.Persistance.Repositories.AppDb.RoomRepository;
 
@@ -68,6 +69,22 @@ public class RoomQueryRepository : Repository,IRoomQueryRepository
                 Name = reader["Name"].ToString()
             };
         }
+    }
+
+    public async Task<int> GetByName(string name)
+    {
+        var command = CreateCommand("SELECT Id FROM Room WHERE Name = @name");
+        command.Parameters.AddWithValue("@name", name);
+
+        var result = await command.ExecuteScalarAsync();
+
+        int id;
+        if (int.TryParse(result?.ToString(), out id))
+        {
+            return id;
+        }
+
+        return 0;
     }
 
     public Task<Room> GetFirst()

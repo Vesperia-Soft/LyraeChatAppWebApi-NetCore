@@ -26,6 +26,11 @@ public class RoomService : IRoomService
         {
             try
             {
+                var checkRoom = await context.Repositories.roomQueryRepository.GetByName(model.Name);
+                if (checkRoom != 0)
+                {
+                    return checkRoom;
+                }
                 var entity = _mapper.Map<Room>(model);
                 var insertedId = (int)await context.Repositories.roomCommandRepository.AddAsync(entity);
 
