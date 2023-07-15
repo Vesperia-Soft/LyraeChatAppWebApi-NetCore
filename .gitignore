@@ -62,7 +62,7 @@ BenchmarkDotNet.Artifacts/
 project.lock.json
 project.fragment.lock.json
 artifacts/
-
+node_modules/
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
 
@@ -362,3 +362,5 @@ MigrationBackup/
 FodyWeavers.xsd
 /QuickSalesApp.WebApi/appsettings.json
 /LyraeChatApp/LyraeChatApp.Presentation/Content
+/app-ui/node_modules/.bin/
+/app-ui/node_modules/.bin/ansi-html.ps1
