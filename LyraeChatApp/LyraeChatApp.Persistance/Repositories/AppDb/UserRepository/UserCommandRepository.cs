@@ -76,7 +76,7 @@ public class UserCommandRepository : Repository, IUserCommandRepository
         command.ExecuteNonQuery();
     }
 
-    public void UpdatePass(User entity)
+    public void UpdatePassword(User entity)
     {
         var query = "update Users set PasswordHash=@pass where Email=@email";
         var command = CreateCommand(query);

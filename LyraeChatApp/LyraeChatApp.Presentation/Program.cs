@@ -1,11 +1,5 @@
-using LyraeChatApp.Application.Services;
-using LyraeChatApp.Domain.UnitOfWork;
-using LyraeChatApp.Infrastructure.Jwt;
-using LyraeChatApp.Persistance.Mapping;
-using LyraeChatApp.Persistance.Service;
-using LyraeChatApp.Persistance.UnitOfWorkSql;
 using LyraeChatApp.Presentation.Configurations.Extensions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using LyraeChatApp.Presentation.signalR;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -40,7 +34,8 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
 });
 builder.Services.JwtServiceCollections();
 builder.Services.ApplicationServiceConfigurations();
-
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<IDictionary<string, UserConnection>>(opts=> new Dictionary<string, UserConnection>());
 builder.Services.AddCors(options =>
              options.AddDefaultPolicy(builder =>
              builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
@@ -71,7 +66,13 @@ app.UseExceptionHandler(
 );
 app.UseCors();
 app.UseHttpsRedirection();
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<ChatHub>("/chat");
+});
 app.MapControllers();
+
 app.Run();
