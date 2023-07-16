@@ -1,15 +1,65 @@
-.avatar{
+.avatar {
     width: 100px;
     height: 100px;
     margin: 0 !important;
 }
 
-.card-body{
+.card-body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
+    background-color: #C5DFF8;
 }
 
-.card.w-100{
+.card.w-100 {
     margin-top: 50px;
 }
+
+.left-side{
+    border-right: 1px solid #C5DFF8;
+}
+
+.username {
+    font-weight: bold;
+    font-size: 24px;
+}
+
+
+
+/* Message Area */
+
+.message-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.formArea {
+    background-color: #2D4356;
+}
+
+.sendButton {
+    border: 1px solid #C5DFF8 !important;
+}
+
+.message {
+    background-color: #2D4356;
+    padding: 10px;
+    max-width: 50%;
+    word-break: break-all;
+}
+
+.noneSelectedUserArea{
+    background-color: #2D4356;
+    height: 100%;
+    color: #C5DFF8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    line-height: 100px;
+    text-align: center;
+    padding: 50px;
+}
+
