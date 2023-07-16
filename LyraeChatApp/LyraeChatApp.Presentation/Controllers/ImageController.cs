@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LyraeChatApp.Presentation.Controllers;
 
-[Authorize(Roles = "Admin")]
+
 [ApiController]
 [Route("[controller]")]
 public class ImageController : ControllerBase
@@ -29,7 +29,6 @@ public class ImageController : ControllerBase
 
         if (!System.IO.File.Exists(path))
         {
-            // Varsayılan görüntüyü döndür
             string defaultImagePath = "./Content/Images/defaultphoto.jpg";
             byte[] defaultImageBytes = System.IO.File.ReadAllBytes(defaultImagePath);
             string defaultImageMimeType = _fileService.GetMimeType("defaultphoto.jpg");
