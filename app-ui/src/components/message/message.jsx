@@ -10,7 +10,7 @@ function Message({ joinRoom }) {
     const [room, setRoom] = useState();
     const [userName, setUserName] = useState();
     const [users, setUsers] = useState([]);
-
+    const [photoUrls, setPhotoUrls] = useState([]);
     const apiService = new GenericApiService();
 
     useEffect(() => {
@@ -23,10 +23,11 @@ function Message({ joinRoom }) {
         const getUsers = async () => {
             const response = await apiService.get("/User/GetAll")
             setUsers(response.data.items)
+            console.log(response);
         }
 
         getUsers()
-
+       
     }, [])
 
     useEffect(() => {
@@ -46,6 +47,35 @@ function Message({ joinRoom }) {
         const newRoom = userName + user.name;
         setRoom(newRoom);
     }
+
+
+ 
+
+  
+  
+  const fetchPhotos = async () => {
+    try {
+      const urls = await Promise.all(
+        users.map(async (user) => {
+          if (user.photo) {
+            const response = await apiService.get(
+              `/Image/GetImage/5bbd9d67-e7d3-4d83-b508-d77930c15924.png`
+            );
+            return `data:${response.headers["content-type"]};base64,${response.data}`;
+          }
+          return null;
+        })
+      );
+      setPhotoUrls(urls);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPhotos();
+  }, [users]);
+
     return (
         <Container fluid>
             <Row>
@@ -54,7 +84,8 @@ function Message({ joinRoom }) {
                     {users.length > 0 ? users.map((user, index) => (
                         <div role="button" className="card w-100" key={index} onClick={() => handleClickUser({ name: user.name })}>
                             <div className="card-body">
-                                {user.name} <img alt="icon" className="avatar" src={user.avatar}></img>
+                                {user.name}           { <img  src={photoUrls[index]} alt={user.name} />}
+
                             </div>
                         </div>
                     )): null}

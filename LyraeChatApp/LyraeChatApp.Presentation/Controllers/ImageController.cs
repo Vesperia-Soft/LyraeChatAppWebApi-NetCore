@@ -26,10 +26,18 @@ public class ImageController : ControllerBase
     public IActionResult GetImage(string fileName)
     {
         string path = "./Content/Images/" + fileName;
+
+        if (!System.IO.File.Exists(path))
+        {
+            // Varsayılan görüntüyü döndür
+            string defaultImagePath = "./Content/Images/defaultphoto.jpg";
+            byte[] defaultImageBytes = System.IO.File.ReadAllBytes(defaultImagePath);
+            string defaultImageMimeType = _fileService.GetMimeType("defaultphoto.jpg");
+            return File(defaultImageBytes, defaultImageMimeType);
+        }
+
         byte[] fileBytes = System.IO.File.ReadAllBytes(path);
-
         string mimeType = _fileService.GetMimeType(fileName);
-
         return File(fileBytes, mimeType);
     }
     #endregion

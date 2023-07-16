@@ -21,8 +21,4 @@
     <ProjectReference Include="..\LyraeChatApp.Persistance\LyraeChatApp.Persistance.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Content\Images\" />
-  </ItemGroup>
-
 </Project>
