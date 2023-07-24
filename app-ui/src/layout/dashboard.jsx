@@ -94,7 +94,7 @@ export default function Dashboard() {
                 </div>
                 <Col md={12} className='m-0 p-0 w-100'>
                     <Routes>
-                        <Route exact path="/" element={<Message joinRoom={joinRoom} />} />
+                        <Route exact path="/" element={<Message joinRoom={joinRoom} sendMessage={sendMessage} messages={messages}/>} />
                         <Route exact path="/login" element={<Login />} />
                         {/* <Route exact path="/register" element={<Register />} /> */}
                         <Route exact path="/password-recovery" element={<PasswordRecovery />} />
