@@ -11,17 +11,24 @@ namespace LyraeChatApp.Persistance.Service;
 
 public sealed class DepartmentService : IDepartmentService
 {
-    private IUnitOfWork _unitOfWork;
+    #region Fields
     private IMapper _mapper;
+    private IUnitOfWork _unitOfWork;
     private readonly ILogService _logService;
-
-    public DepartmentService(IMapper mapper, IUnitOfWork unitOfWork, ILogService logService)
+    #endregion
+    #region Ctor
+    public DepartmentService(
+        IMapper mapper,
+        IUnitOfWork unitOfWork,
+        ILogService logService)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
         _logService = logService;
     }
+    #endregion
 
+    #region Methods
     public async Task Create(CreateDepartmentModel model)
     {
         using (var context = _unitOfWork.Create())
@@ -40,7 +47,6 @@ public sealed class DepartmentService : IDepartmentService
             }
         }
     }
-
 
     public async Task<ResponseDto<DepartmentModel>> Get(int id)
     {
@@ -63,7 +69,6 @@ public sealed class DepartmentService : IDepartmentService
             }
         }
     }
-
     public async Task<ResponseDto<PaginationHelper<DepartmentListModel>>> GetAll(PaginationRequest request)
     {
         using (var context = _unitOfWork.Create())
@@ -89,8 +94,6 @@ public sealed class DepartmentService : IDepartmentService
             }
         }
     }
-
-
     public async Task Remove(int id)
     {
         using (var context = _unitOfWork.Create())
@@ -131,5 +134,6 @@ public sealed class DepartmentService : IDepartmentService
             }
         }
     }
+    #endregion
 }
 

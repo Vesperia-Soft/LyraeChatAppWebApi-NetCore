@@ -9,18 +9,22 @@ namespace LyraeChatApp.Persistance.Service;
 
 public class UserService : IUserService
 {
-
+    #region Fields
     private IUnitOfWork _unitOfWork;
     private IMapper _mapper;
+    #endregion
+    #region Ctor
     public UserService(
-        IUnitOfWork unitOfWork,
-        IMapper mapper
+        IMapper mapper,
+        IUnitOfWork unitOfWork
         )
     {
-        _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _unitOfWork = unitOfWork;
     }
+    #endregion
 
+    #region Methods
     public Task<User> CheckUser(string userName)
     {
         using (var context = _unitOfWork.Create())
@@ -69,10 +73,10 @@ public class UserService : IUserService
     {
         using (var context = _unitOfWork.Create())
         {
-
             context.Repositories.userCommandRepository.Update(user);
 
             context.SaveChanges();
         }
     }
+    #endregion
 }

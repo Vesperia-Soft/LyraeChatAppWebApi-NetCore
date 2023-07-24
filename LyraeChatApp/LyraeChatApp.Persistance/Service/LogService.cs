@@ -8,17 +8,25 @@ namespace LyraeChatApp.Persistance.Service;
 
 public class LogService : ILogService
 {
-    private readonly ILogger<LogService> _logger;
+    #region Fields
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
-
-    public LogService(ILogger<LogService> logger, IMapper mapper, IUnitOfWork unitOfWork)
+    private readonly ILogger<LogService> _logger;
+    #endregion
+    #region Ctor
+    public LogService(
+        IMapper mapper,
+        IUnitOfWork unitOfWork,
+        ILogger<LogService> logger
+      )
     {
         _logger = logger;
         _mapper = mapper;
         _unitOfWork = unitOfWork;
     }
+    #endregion
 
+    #region Methods
     public async void LogToDb(string message, string userName)
     {
         using (var context = _unitOfWork.Create())
@@ -32,4 +40,5 @@ public class LogService : ILogService
             context.SaveChanges();
         }
     }
+    #endregion
 }

@@ -13,9 +13,11 @@ namespace LyraeChatApp.Presentation.Controllers;
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
+    #region Fields
     private readonly IUserService _userService;
     private readonly IFileService _fileService;
-
+    #endregion
+    #region Ctor
     public UserController(
         IUserService userService,
         IFileService fileService)
@@ -23,7 +25,9 @@ public class UserController : ControllerBase
         _userService = userService;
         _fileService = fileService;
     }
+    #endregion
 
+    #region Methods
 
     [HttpGet("[action]")]
     public IActionResult GetAll([FromQuery] PaginationRequest request)
@@ -56,7 +60,7 @@ public class UserController : ControllerBase
         _userService.RemoveUsers(id);
         return Ok();
     }
-
+    #endregion
     #region Helpers
     #endregion
 

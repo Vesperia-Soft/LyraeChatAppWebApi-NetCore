@@ -9,17 +9,25 @@ namespace LyraeChatApp.Persistance.Service;
 
 public class MessageService : IMessageService
 {
-
-    private readonly IUnitOfWork _unitOfWork;
+    #region Fields
     private IMapper _mapper;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ILogService _logService;
-
-    public MessageService(IMapper mapper, IUnitOfWork unitOfWork, ILogService logService)
+    #endregion
+    #region Ctor
+    public MessageService(
+        IMapper mapper,
+        IUnitOfWork unitOfWork,
+        ILogService logService
+     )
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
         _logService = logService;
     }
+    #endregion
+
+    #region Methods
 
     public async Task Create(CreateMessageModel model)
     {
@@ -40,7 +48,6 @@ public class MessageService : IMessageService
             }
         }
     }
-
     public async Task<MessageModel> Get(int id)
     {
         using (var context = _unitOfWork.Create())
@@ -60,7 +67,6 @@ public class MessageService : IMessageService
             }
         }
     }
-
     public PaginationHelper<Message> GetAll(PaginationRequest request)
     {
         using (var context = _unitOfWork.Create())
@@ -77,7 +83,6 @@ public class MessageService : IMessageService
             }
         }
     }
-
     public async Task Remove(int id)
     {
         using (var context = _unitOfWork.Create())
@@ -97,7 +102,6 @@ public class MessageService : IMessageService
             }
         }
     }
-
     public void Update(UpdateMessageModel model)
     {
         using (var context = _unitOfWork.Create())
@@ -119,4 +123,5 @@ public class MessageService : IMessageService
             }
         }
     }
+    #endregion
 }
