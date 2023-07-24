@@ -1,6 +1,6 @@
 
 <div align="center">
-  <h1 align="center">Lyrae Chat App - Ado.Net - NetCore - Angular</h1>
+  <h1 align="center">Lyrae Chat App - Ado.Net - NetCore - React</h1>
 </div>
 ## LyrareChatApp is a web-based assistant application that enables employees to communicate with each other in a safe and fast manner. ✨
 
