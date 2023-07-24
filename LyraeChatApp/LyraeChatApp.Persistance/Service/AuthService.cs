@@ -2,21 +2,25 @@
 using LyraeChatApp.Application.Services;
 using LyraeChatApp.Domain.Models.User;
 using LyraeChatApp.Domain.UnitOfWork;
-using System.Linq;
 
 namespace LyraeChatApp.Persistance.Service;
 
 public class AuthService : IAuthService
 {
+    #region Field
     private IUnitOfWork _unitOfWork;
     private IMapper _mapper;
+    #endregion
 
+    #region Ctor
     public AuthService(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
+    #endregion
 
+    #region Methods
     public async Task ChangePassword(ChangePasswordModel model)
     {
         using (var context = _unitOfWork.Create())
@@ -38,6 +42,20 @@ public class AuthService : IAuthService
         }
     }
 
+    public async Task CreateUsers(CreateUserModel userModel)
+    {
+        var checkImageUserModel = CheckToImageFile(userModel);
+        using (var context = _unitOfWork.Create())
+        {
+            var userEntity = _mapper.Map<User>(checkImageUserModel);
+
+            await context.Repositories.userCommandRepository.AddAsync(userEntity);
+            context.SaveChanges();
+        }
+    }
+    #endregion
+
+    #region Helpers
     public async Task<bool> CheckDatabaseForUser(string userName)
     {
         using (var context = _unitOfWork.Create())
@@ -45,17 +63,6 @@ public class AuthService : IAuthService
             var result = await context.Repositories.userQueryRepository.CheckDatabaseForUserName(userName);
 
             return result;
-        }
-    }
-
-    public async Task CreateUsers(CreateUserModel userModel)
-    {
-        var checkImageUserModel = CheckToImageFile(userModel);
-        using (var context = _unitOfWork.Create())
-        {
-            var userEntity = _mapper.Map<User>(checkImageUserModel);
-            await context.Repositories.userCommandRepository.AddAsync(userEntity);
-            context.SaveChanges();
         }
     }
 
@@ -80,5 +87,6 @@ public class AuthService : IAuthService
         return model;
     }
 
+    #endregion
 
 }

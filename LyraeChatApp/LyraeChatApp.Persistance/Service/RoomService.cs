@@ -3,22 +3,34 @@ using LyraeChatApp.Application.Services;
 using LyraeChatApp.Domain.Helpers;
 using LyraeChatApp.Domain.Models.HelperModels;
 using LyraeChatApp.Domain.Models.Room;
+using LyraeChatApp.Domain.ResponseDtosModel;
 using LyraeChatApp.Domain.UnitOfWork;
 
 namespace LyraeChatApp.Persistance.Service;
 
 public class RoomService : IRoomService
 {
-    private readonly IUnitOfWork _unitOfWork;
+    #region Fields
     private readonly IMapper _mapper;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ILogService _logService;
+    #endregion
 
-    public RoomService(IUnitOfWork unitOfWork, IMapper mapper, ILogService logService)
+    #region Ctor
+    public RoomService(
+        IMapper mapper,
+        IUnitOfWork unitOfWork,
+        ILogService logService
+        )
     {
-        _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _unitOfWork = unitOfWork;
         _logService = logService;
     }
+    #endregion
+
+    #region Methods
+
 
     public async Task<int> CreateRoom(CreateRoomModel model)
     {
@@ -46,7 +58,7 @@ public class RoomService : IRoomService
         }
     }
 
-    public async Task<Room> Get(int id)
+    public async Task<ResponseDto<RoomModel>> Get(int id)
     {
         using (var context = _unitOfWork.Create())
         {
@@ -56,8 +68,11 @@ public class RoomService : IRoomService
                     throw new Exception("Listelemek istediğiniz oda sistemde bulunamadı");
 
                 var result = context.Repositories.roomQueryRepository.GetById(id).Result;
-                return result;
-            }catch(Exception ex)
+                var room = _mapper.Map<RoomModel>(result);
+
+                return ResponseDto<RoomModel>.Success(room, 200);
+            }
+            catch (Exception ex)
             {
                 _logService.LogToDb($"Odalar listelenirken hata oluştu: {ex.Message}", id.ToString());
                 throw;
@@ -65,15 +80,23 @@ public class RoomService : IRoomService
         }
     }
 
-    public PaginationHelper<RoomListModel> GetAllRoom(PaginationRequest request)
+    public async Task<ResponseDto<PaginationHelper<RoomListModel>>> GetAllRoom(PaginationRequest request)
     {
         using (var context = _unitOfWork.Create())
         {
             try
             {
                 var result = context.Repositories.roomQueryRepository.GetAll(request.PageNumber, request.PageSize);
-                return result;
-            }catch(Exception ex)
+
+                var paginationHelper = new PaginationHelper<RoomListModel>(result.TotalCount, request.PageSize, request.PageNumber, null);
+
+                var roomList = result.Items.Select(item => _mapper.Map<RoomListModel>(item)).ToList();
+
+                paginationHelper.Items = roomList;
+
+                return ResponseDto<PaginationHelper<RoomListModel>>.Success(paginationHelper, 200);
+            }
+            catch (Exception ex)
             {
                 _logService.LogToDb($"Odalar listelenirken hata oluştu: {ex.Message}", "");
                 throw;
@@ -92,7 +115,8 @@ public class RoomService : IRoomService
 
                 await context.Repositories.roomCommandRepository.RemoveById(id);
                 context.SaveChanges();
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logService.LogToDb($"Oda silinirken hata oluştu: {ex.Message}", id.ToString());
                 throw;
@@ -115,11 +139,12 @@ public class RoomService : IRoomService
                 context.Repositories.roomCommandRepository.Update(entity);
                 context.SaveChanges();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logService.LogToDb($"Oda güncellenirken hata oluştu: {ex.Message}", "Admin");
                 throw;
             }
         }
     }
+    #endregion
 }

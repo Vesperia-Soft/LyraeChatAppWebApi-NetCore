@@ -25,7 +25,9 @@ public class MappingProfile : Profile
 
         #region Room
         CreateMap<Room,CreateRoomModel>().ReverseMap(); 
-        CreateMap<Room,UpdateRoomModel>().ReverseMap();
+         CreateMap<Room,UpdateRoomModel>().ReverseMap();
+         CreateMap<Room,RoomListModel>().ReverseMap();
+         CreateMap<Room,RoomModel>().ReverseMap();
         #endregion
         #region MessageMapProfile
         CreateMap<Message, CreateMessageModel>().ReverseMap();

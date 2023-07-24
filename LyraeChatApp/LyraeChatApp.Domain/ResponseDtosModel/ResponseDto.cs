@@ -1,12 +1,15 @@
-﻿namespace LyraeChatApp.Domain.ResponseDtosModel;
+﻿using System.Text.Json.Serialization;
+
+namespace LyraeChatApp.Domain.ResponseDtosModel;
 
 public class ResponseDto<T>
 {
     public T Data { get; set; }
     public List<string> Errors { get; set; }
+    [JsonIgnore]
     public int StatusCode { get; private set; }
+    [JsonIgnore]
     public bool IsSuccessful { get; private set; }   
-
     public static ResponseDto<T> Success(T data, int statusCode)
     {
         return new ResponseDto<T> { Data = data, StatusCode = statusCode ,IsSuccessful= true};
