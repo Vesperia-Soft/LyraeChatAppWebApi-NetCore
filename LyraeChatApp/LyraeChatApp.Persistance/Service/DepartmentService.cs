@@ -4,6 +4,7 @@ using LyraeChatApp.Domain.Helpers;
 using LyraeChatApp.Domain.Models.Department;
 using LyraeChatApp.Domain.Models.HelperModels;
 using LyraeChatApp.Domain.Models.User;
+using LyraeChatApp.Domain.ResponseDtosModel;
 using LyraeChatApp.Domain.UnitOfWork;
 
 namespace LyraeChatApp.Persistance.Service;
@@ -40,7 +41,8 @@ public sealed class DepartmentService : IDepartmentService
         }
     }
 
-    public async Task<Department> Get(int id)
+
+    public async Task<ResponseDto<Department>> Get(int id)
     {
         using (var context = _unitOfWork.Create())
         {
@@ -49,7 +51,8 @@ public sealed class DepartmentService : IDepartmentService
                 if (!context.Repositories.departmentQueryRepository.CheckDepartmentId(id).Result)
                     throw new Exception("Listelemek istediğiniz departman sistemde bulunamadı");
                 var result = context.Repositories.departmentQueryRepository.GetById(id).Result;
-                return result;
+
+                return ResponseDto<Department>.Success(result, 200);
             }
             catch (Exception ex)
             {
@@ -59,14 +62,15 @@ public sealed class DepartmentService : IDepartmentService
         }
     }
 
-    public PaginationHelper<Department> GetAll(PaginationRequest request)
+    public async  Task<ResponseDto<PaginationHelper<Department>>> GetAll(PaginationRequest request)
     {
         using (var context = _unitOfWork.Create())
         {
             try
             {
                 var result = context.Repositories.departmentQueryRepository.GetAll(request.PageNumber, request.PageSize);
-                return result;
+
+                return ResponseDto<PaginationHelper<Department>>.Success(result, 200);
             }
             catch (Exception ex)
             {

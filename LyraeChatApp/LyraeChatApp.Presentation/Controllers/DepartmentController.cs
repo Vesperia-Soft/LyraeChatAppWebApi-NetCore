@@ -1,15 +1,14 @@
 ﻿using LyraeChatApp.Application.Services;
 using LyraeChatApp.Domain.Models.Department;
 using LyraeChatApp.Domain.Models.HelperModels;
-using Microsoft.AspNetCore.Authorization;
+using LyraeChatApp.Presentation.ControllerBased;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 
 namespace LyraeChatApp.Presentation.Controllers;
-[Authorize(Roles = "Admin")]
+
 [ApiController]
 [Route("[controller]")]
-public class DepartmentController : ControllerBase
+public class DepartmentController : CustomBaseController
 {
     private readonly IDepartmentService _departmentService;
 
@@ -18,19 +17,23 @@ public class DepartmentController : ControllerBase
         _departmentService = departmentService;
     }
 
+
+
     [HttpGet("[action]")]
-    public IActionResult GetAll([FromQuery] PaginationRequest request)
+    public async Task<IActionResult> GetAll([FromQuery] PaginationRequest request)
     {
-        var users = _departmentService.GetAll(request);
-        return Ok(users);
+        var users = await _departmentService.GetAll(request);
+
+        return CreateActionResultInstance(users);
     }
 
+
     [HttpGet("{id}")]
-    public ActionResult<IEnumerable<string>> Get(int id)
+    public async Task<IActionResult> Get(int id)
     {
-        return Ok(
-            _departmentService.Get(id)
-        );
+        var user = await _departmentService.Get(id);
+
+        return CreateActionResultInstance(user);
     }
 
     [HttpPost("[action]")]
