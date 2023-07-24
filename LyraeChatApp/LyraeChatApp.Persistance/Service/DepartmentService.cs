@@ -42,7 +42,7 @@ public sealed class DepartmentService : IDepartmentService
     }
 
 
-    public async Task<ResponseDto<Department>> Get(int id)
+    public async Task<ResponseDto<DepartmentModel>> Get(int id)
     {
         using (var context = _unitOfWork.Create())
         {
@@ -52,7 +52,9 @@ public sealed class DepartmentService : IDepartmentService
                     throw new Exception("Listelemek istediğiniz departman sistemde bulunamadı");
                 var result = context.Repositories.departmentQueryRepository.GetById(id).Result;
 
-                return ResponseDto<Department>.Success(result, 200);
+                var department = _mapper.Map<DepartmentModel>(result);
+
+                return ResponseDto<DepartmentModel>.Success(department, 200);
             }
             catch (Exception ex)
             {
@@ -62,7 +64,7 @@ public sealed class DepartmentService : IDepartmentService
         }
     }
 
-    public async  Task<ResponseDto<PaginationHelper<Department>>> GetAll(PaginationRequest request)
+    public async Task<ResponseDto<PaginationHelper<DepartmentListModel>>> GetAll(PaginationRequest request)
     {
         using (var context = _unitOfWork.Create())
         {
@@ -70,7 +72,15 @@ public sealed class DepartmentService : IDepartmentService
             {
                 var result = context.Repositories.departmentQueryRepository.GetAll(request.PageNumber, request.PageSize);
 
-                return ResponseDto<PaginationHelper<Department>>.Success(result, 200);
+
+                var paginationHelper = new PaginationHelper<DepartmentListModel>(
+                    result.TotalCount, request.PageSize, request.PageNumber, null);
+
+                var departmentList = result.Items.Select(item => _mapper.Map<DepartmentListModel>(item)).ToList();
+
+                paginationHelper.Items = departmentList;
+
+                return ResponseDto<PaginationHelper<DepartmentListModel>>.Success(paginationHelper, 200);
             }
             catch (Exception ex)
             {
@@ -79,6 +89,7 @@ public sealed class DepartmentService : IDepartmentService
             }
         }
     }
+
 
     public async Task Remove(int id)
     {

@@ -19,6 +19,8 @@ public class MappingProfile : Profile
         #region DepartmentMapProfile
         CreateMap<Department, CreateDepartmentModel>().ReverseMap();
         CreateMap<Department, UpdateDepartmentModel>().ReverseMap();
+        CreateMap<Department, DepartmentListModel>().ReverseMap();
+        CreateMap<Department, DepartmentModel>().ReverseMap();
         #endregion
 
         #region Room
