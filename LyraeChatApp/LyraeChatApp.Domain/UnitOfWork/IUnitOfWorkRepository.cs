@@ -3,6 +3,7 @@ using LyraeChatApp.Domain.Repositories.App.LogRepositories;
 using LyraeChatApp.Domain.Repositories.App.MessageRepositories;
 using LyraeChatApp.Domain.Repositories.App.RoomRepositories;
 using LyraeChatApp.Domain.Repositories.App.UserRepositories;
+using LyraeChatApp.Domain.Repositories.App.UserRoom;
 
 namespace LyraeChatApp.Domain.UnitOfWork;
 
@@ -27,6 +28,14 @@ public interface IUnitOfWorkRepository
     ILogCommandRepository logCommandRepository { get; }
     #endregion
 
+    #region Room 
     IRoomCommandRepository roomCommandRepository { get; }
     IRoomQueryRepository roomQueryRepository { get; }
+    #endregion
+
+    #region UserRoom
+    IUserRoomCommandRepository userRoomCommandRepository { get; }
+    IUserRoomQueryRepository userRoomQueryRepository { get; }
+    #endregion
+
 }

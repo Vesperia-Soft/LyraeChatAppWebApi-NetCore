@@ -10,6 +10,8 @@ using LyraeChatApp.Persistance.Repositories.AppDb.LogRepository;
 using LyraeChatApp.Persistance.Repositories.AppDb.MessageRepository;
 using LyraeChatApp.Persistance.Repositories.AppDb.UserRepository;
 using System.Data.SqlClient;
+using LyraeChatApp.Domain.Repositories.App.UserRoom;
+using LyraeChatApp.Persistance.Repositories.AppDb.UserRoom;
 
 namespace LyraeChatApp.Persistance.UnitOfWorkSql;
 
@@ -23,25 +25,31 @@ public class UnitOfWorkSqlServerRepository : IUnitOfWorkRepository
     public IMessageCommandRepository messageCommandRepository { get; }
     public IMessageQueryRepository messageQueryRepository { get; }
     public ILogCommandRepository logCommandRepository { get; }
-    #endregion
 
     public IRoomCommandRepository roomCommandRepository { get; }
 
     public IRoomQueryRepository roomQueryRepository { get; }
-  
+
+    public IUserRoomCommandRepository userRoomCommandRepository { get; }
+
+    public IUserRoomQueryRepository userRoomQueryRepository { get; }
+    #endregion
+
 
     #region CTOR
     public UnitOfWorkSqlServerRepository(SqlConnection context, SqlTransaction transaction)
     {
         userCommandRepository = new UserCommandRepository(context, transaction);
-        userQueryRepository =  new UserQueryRepository(context, transaction);
-        departmentCommandRepository = new DepartmentCommandRepository(context,transaction);
+        userQueryRepository = new UserQueryRepository(context, transaction);
+        departmentCommandRepository = new DepartmentCommandRepository(context, transaction);
         departmentQueryRepository = new DepartmentQueryRepository(context, transaction);
         roomCommandRepository = new RoomCommandRepository(context, transaction);
         roomQueryRepository = new RoomQueryRepository(context, transaction);
         messageCommandRepository = new MessageCommandRepository(context, transaction);
         messageQueryRepository = new MessageQueryRepository(context, transaction);
         logCommandRepository = new LogCommandRepository(context, transaction);
+        userRoomCommandRepository= new UserRoomCommandRepository(context,transaction);
+        userRoomQueryRepository= new UserRoomQueryRepository(context, transaction);
     }
     #endregion
 }

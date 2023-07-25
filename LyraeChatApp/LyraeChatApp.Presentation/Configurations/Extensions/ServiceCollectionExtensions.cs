@@ -21,6 +21,7 @@ public static class ServiceCollectionExtensions
         services.AddAutoMapper(typeof(MappingProfile));
         services.AddScoped<ILogService, LogService>();
         services.AddScoped<IFileService, FileService>();
+        services.AddScoped<IUserRoomService, UserRoomService>();
         services.AddEndpointsApiExplorer();
         services.AddControllers();
 

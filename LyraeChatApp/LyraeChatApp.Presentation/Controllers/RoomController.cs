@@ -11,14 +11,17 @@ public class RoomController : CustomBaseController
 {
     #region Fields
     private readonly IRoomService _roomService;
+    private readonly IUserRoomService _userRoomService;
     #endregion
 
     #region Ctor
     public RoomController(
-        IRoomService roomService
-    )
+        IRoomService roomService,
+        IUserRoomService userRoomService
+        )
     {
         _roomService = roomService;
+        _userRoomService = userRoomService;
     }
     #endregion
 
@@ -43,6 +46,9 @@ public class RoomController : CustomBaseController
     public async Task<IActionResult> Create(CreateRoomModel model)
     {
         var roomId = await _roomService.CreateRoom(model);
+
+       await  _userRoomService.Create(model.UserId, roomId);
+
         return Ok(roomId);
     }
 
@@ -58,6 +64,14 @@ public class RoomController : CustomBaseController
     {
         _roomService.RemoveRoom(id);
         return Ok();
+    }
+
+    [HttpGet("[action]")]
+    public async Task<IActionResult> GetAllUserRoom([FromQuery] int userId)
+    {
+      var result =   await _userRoomService.GetUserRoomListAsync(userId);
+
+        return CreateActionResultInstance(result);
     }
     #endregion
 }
