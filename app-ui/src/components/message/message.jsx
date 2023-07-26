@@ -42,7 +42,7 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 	}, [localStoreId]);
 
 	const getOldMessage = async (roomId) => {
-		const response = await apiService.get(`/Message/GetAll?PageNumber=1&PageSize=10&roomId=${roomId}`);
+		const response = await apiService.get(`/Message/GetAll?PageNumber=1&PageSize=1000&roomId=${roomId}`);
 		setOldMessages(response.data && response.data.items)
 	}
 
@@ -92,7 +92,7 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 					style={{
 						backgroundColor: "#2D4356",
 						height: "calc(100vh - 114px)",
-						maxHeight: "calc(100vh - 50px)",
+						maxHeight: "calc(100vh - 114px)",
 						overflowY: "auto",
 					}}
 				>
@@ -129,8 +129,8 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 				<Col md={9} className="message-area p-0">
 					{selectedUser.userName?.length > 0 ? (
 						<>
-							<div className="read-message h-100">
-								<div ref={messageRef} className="message-container h-100" style={{ maxHeight: 'calc(100vh - 135px)' }}>
+							<div className="read-message h-80" >
+								<div ref={messageRef} className="message-container" style={{height: "calc(100vh - 200px)"}}>
 									{
 										oldMessages.length > 0 && oldMessages.map((m, index) => (
 											<div key={index} style={m.userId != userId ? { float: 'left' } : { float: 'right' }} className={"user-message"}>
