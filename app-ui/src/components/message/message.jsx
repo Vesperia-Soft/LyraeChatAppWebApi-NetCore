@@ -5,6 +5,7 @@ import GenericApiService from "../../services/GenericApiService";
 import { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane, faAddressBook } from "@fortawesome/free-solid-svg-icons";
+import * as signalR from "@microsoft/signalr";
 
 function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 	const [selectedUser, setSelectedUser] = useState({});
@@ -12,29 +13,53 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 	const [userName, setUserName] = useState();
 	const [userId, setUserId] = useState();
 	const [users, setUsers] = useState([]);
-	const [message, setMessage] = useState('');
+	const [message, setMessage] = useState("");
 	const [localStoreId, setLocalStoreId] = useState(0);
 	const [activeRoomId, setActiveRoomId] = useState(0);
-
-
+	const [connection, setConnection] = useState(null);
+	const [activeUsers, setActiveUsers] = useState([]);
 	const apiService = new GenericApiService();
+
+	useEffect(() => {
+		const hubConnection = new signalR.HubConnectionBuilder()
+			.withUrl(`https://localhost:7246/chat?username=${userName}`)
+			.build();
+
+		setConnection(hubConnection);
+
+		hubConnection
+			.start()
+			.then(() => {
+				console.log("SignalR connected");
+			})
+			.catch((err) => console.error("SignalR connection error:", err));
+
+		hubConnection.on("UsersInRoom", (users) => {
+			setActiveUsers(users);
+			console.log(users);
+		});
+	}, [userName]);
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
 		if (token) {
 			const decodedToken = atob(token?.split(".")[1]);
 			const parsedToken = JSON.parse(decodedToken);
-			const userId = parsedToken['Id'];
+			const userId = parsedToken["Id"];
 			setLocalStoreId(userId);
 			setUserName(
-				parsedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]
+				parsedToken[
+				"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+				]
 			);
-			setUserId(parsedToken["Id"])
+			setUserId(parsedToken["Id"]);
 		}
 	}, []);
 
 	const getUsers = async () => {
-		const response = await apiService.get(`/Room/GetAllUserRoom?userId=${localStoreId}`);
+		const response = await apiService.get(
+			`/Room/GetAllUserRoom?userId=${localStoreId}`
+		);
 		setUsers(response.data ? response.data.data : []);
 	};
 	useEffect(() => {
@@ -42,21 +67,27 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 	}, [localStoreId]);
 
 	const getOldMessage = async (roomId) => {
-		const response = await apiService.get(`/Message/GetAll?PageNumber=1&PageSize=1000&roomId=${roomId}`);
-		setOldMessages(response.data && response.data.items)
-	}
+		const response = await apiService.get(
+			`/Message/GetAll?PageNumber=1&PageSize=1000&roomId=${roomId}`
+		);
+		setOldMessages(response.data && response.data.items);
+	};
 
 	const handleClickUser = async ({ user }) => {
-		selectedUser && closeConnection()
+		selectedUser && closeConnection();
 		setSelectedUser(user);
 		console.log(user.roomId);
 		if (user.roomId === undefined) {
-			const response = await apiService.post(`/Room/Create`, { name: user.userName + userName, isActive: true, userId: [userId, `${user.id}`] });
+			const response = await apiService.post(`/Room/Create`, {
+				name: user.userName + userName,
+				isActive: true,
+				userId: [userId, `${user.id}`],
+			});
 			joinRoom(userName, `${response.data}`);
-			setActiveRoomId(response.data)
+			setActiveRoomId(response.data);
 		} else {
 			joinRoom(userName, `${user.roomId}`);
-			setActiveRoomId(user.roomId)
+			setActiveRoomId(user.roomId);
 			getOldMessage(user.roomId);
 		}
 		getUsers();
@@ -65,23 +96,34 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 	const handleSendMessage = async (e) => {
 		e.preventDefault();
 		sendMessage(message);
-		const response = await apiService.post(`/Message/Create`, { text: message, userId: userId, roomId: activeRoomId, creatorName: userName });
-		setMessage('');
-	}
+		const response = await apiService.post(`/Message/Create`, {
+			text: message,
+			userId: userId,
+			roomId: activeRoomId,
+			creatorName: userName,
+		});
+		setMessage("");
+	};
 
 	const messageRef = useRef();
 
 	useEffect(() => {
 		if (messageRef && messageRef.current) {
 			const { scrollHeight, clientHeight } = messageRef.current;
-			messageRef.current.scrollTo({ left: 0, top: scrollHeight - clientHeight, behavior: 'smooth' });
+			messageRef.current.scrollTo({
+				left: 0,
+				top: scrollHeight - clientHeight,
+				behavior: "smooth",
+			});
 		}
-	}, [messages])
+	}, [messages]);
 
 	const handleClickContact = async () => {
-		const response = await apiService.get(`/User/GetAll?PageNumber=1&PageSize=100`);
+		const response = await apiService.get(
+			`/User/GetAll?PageNumber=1&PageSize=100`
+		);
 		setUsers(response.data.items);
-	}
+	};
 
 	return (
 		<Container fluid>
@@ -97,12 +139,17 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 					}}
 				>
 					<div className="subContainerLeftSide">
-						<FontAwesomeIcon onClick={() => handleClickContact()} role="button" className="addressIcon" icon={faAddressBook} />
+						<FontAwesomeIcon
+							onClick={() => handleClickContact()}
+							role="button"
+							className="addressIcon"
+							icon={faAddressBook}
+						/>
 						<p>Sohbetler</p>
 					</div>
 					{users.length > 0
 						? users.map((user, index) => {
-							if (user.userName === localStorage.getItem('loginUserName')) {
+							if (user.userName === localStorage.getItem("loginUserName")) {
 								return null;
 							}
 							return (
@@ -111,7 +158,7 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 									className="card w-100"
 									key={index}
 									onClick={() => handleClickUser({ user: user })}
-									style={{ maxHeight: '175px' }}
+									style={{ maxHeight: "175px" }}
 								>
 									<div className="card-body d-flex justify-content-between align-items-center">
 										<img
@@ -119,7 +166,7 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 											alt={user.userName}
 											className="m-0 avatar"
 										/>
-										<span className="username">{user.userName}{" "}</span>
+										<span className="username">{user.userName} </span>
 									</div>
 								</div>
 							);
@@ -129,40 +176,92 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 				<Col md={9} className="message-area p-0">
 					{selectedUser.userName?.length > 0 ? (
 						<>
-							<div className="read-message h-80" >
-								<div ref={messageRef} className="message-container" style={{height: "calc(100vh - 200px)"}}>
-									{
-										oldMessages.length > 0 && oldMessages.map((m, index) => (
-											<div key={index} style={m.userId != userId ? { float: 'left' } : { float: 'right' }} className={"user-message"}>
-												<div style={m.userId != userId ? { float: 'left' } : { float: 'right' }} className="message">{m.text}</div>
+							<div className="read-message h-80">
+								<div
+									ref={messageRef}
+									className="message-container"
+									style={{ height: "calc(100vh - 200px)" }}
+								>
+									{oldMessages.length > 0 &&
+										oldMessages.map((m, index) => (
+											<div
+												key={index}
+												style={
+													m.userId != userId
+														? { float: "left" }
+														: { float: "right" }
+												}
+												className={"user-message"}
+											>
+												<div
+													style={
+														m.userId != userId
+															? { float: "left" }
+															: { float: "right" }
+													}
+													className="message"
+												>
+													{m.text}
+												</div>
 												{/* <div className="from-user">{m.user}</div> */}
 											</div>
-										))
-									}{
-
-										messages.map((m, index) => (
-											<div key={index} style={m.user !== userName ? { float: 'left' } : { float: 'right' }} className={"user-message"}>
-												<div style={m.user !== userName ? { float: 'left' } : { float: 'right' }} className="message">{m.message}</div>
-												{/* <div className="from-user">{m.user}</div> */}
+										))}
+									{messages.map((m, index) => (
+										<div
+											key={index}
+											style={
+												m.user !== userName
+													? { float: "left" }
+													: { float: "right" }
+											}
+											className={"user-message"}
+										>
+											<div
+												style={
+													m.user !== userName
+														? { float: "left" }
+														: { float: "right" }
+												}
+												className="message"
+											>
+												{m.message}
 											</div>
-										))
-									}
+											{/* <div className="from-user">{m.user}</div> */}
+										</div>
+									))}
 								</div>
 							</div>
 							<div className="send-message">
-								<form className="d-flex p-4 formArea" onSubmit={handleSendMessage}>
-									<input type="text" className="form-control m-0" placeholder="message..." onChange={e => setMessage(e.target.value)} value={message} />
-									<button role="button" type="submit" disabled={!message} className="btn btn-custom w-25 mx-3 sendButton" >
-										<FontAwesomeIcon className="planeIcon" icon={faPaperPlane} />
+								<form
+									className="d-flex p-4 formArea"
+									onSubmit={handleSendMessage}
+								>
+									<input
+										type="text"
+										className="form-control m-0"
+										placeholder="message..."
+										onChange={(e) => setMessage(e.target.value)}
+										value={message}
+									/>
+									<button
+										role="button"
+										type="submit"
+										disabled={!message}
+										className="btn btn-custom w-25 mx-3 sendButton"
+									>
+										<FontAwesomeIcon
+											className="planeIcon"
+											icon={faPaperPlane}
+										/>
 									</button>
 								</form>
 							</div>
 						</>
-					) :
+					) : (
 						<div className="noneSelectedUserArea">
 							Konuşmak için Birini Seçiniz...
 						</div>
-					}
+					)}
 				</Col>
 			</Row>
 		</Container>
