@@ -111,6 +111,7 @@ public class UserQueryRepository : Repository, IUserQueryRepository
                     Id = Convert.ToInt32(reader["Id"]),
                     UserName = reader["UserName"] != DBNull.Value ? reader["UserName"].ToString() : string.Empty,
                     PasswordHash = reader["PasswordHash"] != DBNull.Value ? reader["PasswordHash"].ToString() : string.Empty,
+                    Photo = reader["Photo"] != DBNull.Value ? reader["Photo"].ToString() : string.Empty,
                     RoleName = reader["RoleName"] != DBNull.Value ? reader["RoleName"].ToString() : string.Empty
                 };
 
