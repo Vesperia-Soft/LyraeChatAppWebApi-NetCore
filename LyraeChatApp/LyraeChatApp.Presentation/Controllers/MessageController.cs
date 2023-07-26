@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LyraeChatApp.Presentation.Controllers;
 
-[Authorize(Roles = "Admin")]
 [ApiController]
 [Route("[controller]")]
 public class MessageController : Controller
@@ -19,9 +18,9 @@ public class MessageController : Controller
     }
 
     [HttpGet("[action]")]
-    public IActionResult GetAll([FromQuery] PaginationRequest request)
+    public IActionResult GetAll([FromQuery] PaginationRequest request, int roomId)
     {
-        var users = _messageService.GetAll(request);
+        var users = _messageService.GetAll(request, roomId);
         return Ok(users);
     }
 
