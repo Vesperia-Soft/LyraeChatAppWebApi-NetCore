@@ -98,7 +98,7 @@ function Message({ joinRoom, sendMessage, messages }) {
 					className="d-flex flex-column justify-content-center align-items-center left-side"
 					style={{
 						backgroundColor: "#2D4356",
-						height: "calc(100vh - 50px)",
+						height: "calc(100vh - 114px)",
 						maxHeight: "calc(100vh - 50px)",
 						overflowY: "auto",
 					}}

@@ -58,7 +58,8 @@ export default function Navbar() {
         <img
           src={`https://localhost:7246/Image/GetImage/${userPhoto}`}
           alt={user.userName}
-          className="m-0 avatar"
+          className="m-0"
+          style={{width:'75px', height:'75px'}}
         />
         <span className="fs-2 text-white mx-4">{user.userName}</span>
       </div>
