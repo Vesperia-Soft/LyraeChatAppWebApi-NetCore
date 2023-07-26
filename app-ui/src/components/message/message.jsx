@@ -13,25 +13,29 @@ function Message({ joinRoom, sendMessage, messages }) {
 	const [users, setUsers] = useState([]);
 	const [message, setMessage] = useState('');
 	const apiService = new GenericApiService();
-
+	const [localStoreId, setLocalStoreId] = useState(0);
 	useEffect(() => {
 		const token = localStorage.getItem("token");
 		if (token) {
-			const decodedToken = atob(token?.split(".")[1]);
-			const parsedToken = JSON.parse(decodedToken);
-			setUserName(
-				parsedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]
-			);
+		  const decodedToken = atob(token?.split(".")[1]);
+		  const parsedToken = JSON.parse(decodedToken);
+		  const userId = parsedToken['Id'];
+		  setLocalStoreId(userId);
+		  console.log(userId);
+		  setUserName(
+			parsedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]
+		  );
 		}
-
+	  }, []);
+	  
+	  useEffect(() => {
 		const getUsers = async () => {
-			const response = await apiService.get("/Room/GetAllUserRoom?userId=23");
-			console.log(response.data.data);
-			setUsers(response.data.data);
+		  const response = await apiService.get(`/Room/GetAllUserRoom?userId=${localStoreId}`);
+		  console.log(response.data.data);
+		  setUsers(response.data.data);
 		};
 		getUsers();
-	}, []);
-
+	  }, [localStoreId]);
 	// useEffect(() => {
 	// 	const createRoom = async () => {
 	// 		if (room !== undefined) {
@@ -90,7 +94,7 @@ function Message({ joinRoom, sendMessage, messages }) {
 									role="button"
 									className="card w-100"
 									key={index}
-									onClick={() => handleClickUser({ name: user.Name  })}
+									onClick={() => handleClickUser({ name: user.userName  })}
 									style={{ maxHeight: '175px' }}
 								>
 									<div className="card-body d-flex justify-content-around align-items-center">

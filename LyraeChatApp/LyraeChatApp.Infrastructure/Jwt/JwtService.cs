@@ -23,6 +23,7 @@ public class JwtService : IJwtService
         {
             new Claim(ClaimTypes.Name,user.UserName),
             new Claim(ClaimTypes.Role,user.RoleName),
+            new Claim("Id",user.Id.ToString())
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Token").Value!));
