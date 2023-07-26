@@ -8,11 +8,14 @@ import { faPaperPlane, faPlane } from "@fortawesome/free-solid-svg-icons";
 
 function Message({ joinRoom, sendMessage, messages }) {
 	const [selectedUser, setSelectedUser] = useState({});
-	const [room, setRoom] = useState();
+	const [oldMessages, setOldMessages] = useState([]);
 	const [userName, setUserName] = useState();
+	const [userId, setUserId] = useState();
 	const [users, setUsers] = useState([]);
 	const [message, setMessage] = useState('');
 	const [localStoreId, setLocalStoreId] = useState(0);
+	const [isHovered, setIsHovered] = useState(false);
+	const [activeRoomId, setActiveRoomId] = useState(0);
 
 
 	const apiService = new GenericApiService();
@@ -27,6 +30,7 @@ function Message({ joinRoom, sendMessage, messages }) {
 			setUserName(
 				parsedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]
 			);
+			setUserId(parsedToken["Id"])
 		}
 	}, []);
 
@@ -53,17 +57,27 @@ function Message({ joinRoom, sendMessage, messages }) {
 	// 	createRoom();
 	// }, [room]);
 
+	const getOldUser = async (roomId) => {
+		const response = await apiService.get(`/Message/GetAll?PageNumber=1&PageSize=10&roomId=${roomId}`);
+		setOldMessages(response.data.items)
+	}
+
 	const handleClickUser = ({ user }) => {
 		setSelectedUser(user);
 		// const newRoom = userName + user.name;
 		// setRoom(newRoom);
-
 		joinRoom(userName, `${user.roomId}`);
+		setActiveRoomId(user.roomId)
+
+		getOldUser(user.roomId);
+
 	};
 
-	const handleSendMessage = (e) => {
+	const handleSendMessage = async (e) => {
 		e.preventDefault();
 		sendMessage(message);
+		const response = await apiService.post(`/Message/Create`, { text: message, userId: userId, roomId: activeRoomId, creatorName: userName });
+		// console.log(response);
 		setMessage('');
 	}
 
@@ -120,19 +134,29 @@ function Message({ joinRoom, sendMessage, messages }) {
 						<>
 							<div className="read-message h-100">
 								<div ref={messageRef} className="message-container h-100" style={{ maxHeight: 'calc(100vh - 135px)' }}>
-									{messages.map((m, index) => (
-										<div key={index} style={m.user !== userName ? { float: 'left'} : { float: 'right' }} className={"user-message"}>
-											<div style={m.user !== userName ? { float: 'left'} : { float: 'right' }} className="message">{m.message}</div>
-											{/* <div className="from-user">{m.user}</div> */}
-										</div>
-									))}
+									{
+										oldMessages.length > 0 && oldMessages.map((m, index) => (
+											<div key={index} style={m.userId != userId ? { float: 'left' } : { float: 'right' }} className={"user-message"}>
+												<div style={m.userId != userId ? { float: 'left' } : { float: 'right' }} className="message">{m.text}</div>
+												{/* <div className="from-user">{m.user}</div> */}
+											</div>
+										))
+									}{
+
+										messages.map((m, index) => (
+											<div key={index} style={m.user !== userName ? { float: 'left' } : { float: 'right' }} className={"user-message"}>
+												<div style={m.user !== userName ? { float: 'left' } : { float: 'right' }} className="message">{m.message}</div>
+												{/* <div className="from-user">{m.user}</div> */}
+											</div>
+										))
+									}
 								</div>
 							</div>
 							<div className="send-message">
 								<form className="d-flex p-4 formArea" onSubmit={handleSendMessage}>
 									<input type="text" className="form-control m-0" placeholder="message..." onChange={e => setMessage(e.target.value)} value={message} />
-									<button type="submit" disabled={!message} className="btn btn-custom w-25 mx-3 sendButton">
-										<FontAwesomeIcon icon={faPaperPlane} style={{ color: "#fff", fontSize: 24 }} />
+									<button onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} role="button" type="submit" disabled={!message} className="btn btn-custom w-25 mx-3 sendButton" >
+										<FontAwesomeIcon className="planeIcon" icon={faPaperPlane} />
 									</button>
 								</form>
 							</div>

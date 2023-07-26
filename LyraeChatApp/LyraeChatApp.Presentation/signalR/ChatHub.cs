@@ -18,7 +18,7 @@ public class ChatHub : Hub
         if (_connection.TryGetValue(Context.ConnectionId, out UserConnection userConnection))
         {
             _connection.Remove(Context.ConnectionId);
-            Clients.Group(userConnection.Room).SendAsync("ReceiveMessage", _botUser, $"{userConnection.User} has left");
+            //Clients.Group(userConnection.Room).SendAsync("ReceiveMessage", _botUser, $"{userConnection.User} has left");
 
             SendConnectedUsers(userConnection.Room);
         }
@@ -39,7 +39,7 @@ public class ChatHub : Hub
 
         _connection[Context.ConnectionId] = userConnection;
 
-        await Clients.Group(userConnection.Room).SendAsync("ReceiveMessage", _botUser, $"{userConnection.User} has joined {userConnection.Room}");
+        //await Clients.Group(userConnection.Room).SendAsync("ReceiveMessage", _botUser);
 
         await SendConnectedUsers(userConnection.Room);
     }

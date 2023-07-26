@@ -37,11 +37,15 @@
 
 .formArea {
     background-color: #2D4356;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .sendButton {
     border: 1px solid #C5DFF8 !important;
 }
+
 
 .message {
     background-color: #2D4356;
