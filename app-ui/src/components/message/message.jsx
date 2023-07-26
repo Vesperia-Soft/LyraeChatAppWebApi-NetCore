@@ -6,7 +6,7 @@ import { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane, faPlane } from "@fortawesome/free-solid-svg-icons";
 
-function Message({ joinRoom, sendMessage, messages }) {
+function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 	const [selectedUser, setSelectedUser] = useState({});
 	const [oldMessages, setOldMessages] = useState([]);
 	const [userName, setUserName] = useState();
@@ -63,14 +63,11 @@ function Message({ joinRoom, sendMessage, messages }) {
 	}
 
 	const handleClickUser = ({ user }) => {
+		selectedUser && closeConnection()
 		setSelectedUser(user);
-		// const newRoom = userName + user.name;
-		// setRoom(newRoom);
 		joinRoom(userName, `${user.roomId}`);
 		setActiveRoomId(user.roomId)
-
 		getOldUser(user.roomId);
-
 	};
 
 	const handleSendMessage = async (e) => {
@@ -116,7 +113,7 @@ function Message({ joinRoom, sendMessage, messages }) {
 									onClick={() => handleClickUser({ user: user })}
 									style={{ maxHeight: '175px' }}
 								>
-									<div className="card-body d-flex justify-content-around align-items-center">
+									<div className="card-body d-flex justify-content-between align-items-center">
 										<img
 											src={`https://localhost:7246/Image/GetImage/${user.photo}`}
 											alt={user.userName}
