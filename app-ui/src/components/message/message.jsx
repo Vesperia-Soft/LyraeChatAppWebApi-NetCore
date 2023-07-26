@@ -25,26 +25,27 @@ function Message({ joinRoom, sendMessage, messages }) {
 		}
 
 		const getUsers = async () => {
-			const response = await apiService.get("/User/GetAll");
-			setUsers(response.data.items);
+			const response = await apiService.get("/Room/GetAllUserRoom?userId=23");
+			console.log(response.data.data);
+			setUsers(response.data.data);
 		};
 		getUsers();
 	}, []);
 
-	useEffect(() => {
-		const createRoom = async () => {
-			if (room !== undefined) {
-				const response = await apiService.post("/Room/Create", {
-					name: room,
-					isActive: true,
-				});
-				if (response.data > 0) {
-					joinRoom(userName, `${response.data}`);
-				}
-			}
-		};
-		createRoom();
-	}, [room]);
+	// useEffect(() => {
+	// 	const createRoom = async () => {
+	// 		if (room !== undefined) {
+	// 			const response = await apiService.post("/Room/Create", {
+	// 				name: room,
+	// 				isActive: true,
+	// 			});
+	// 			if (response.data > 0) {
+	// 				joinRoom(userName, `${response.data}`);
+	// 			}
+	// 		}
+	// 	};
+	// 	createRoom();
+	// }, [room]);
 
 	const handleClickUser = (user) => {
 		setSelectedUser(user);
@@ -89,7 +90,7 @@ function Message({ joinRoom, sendMessage, messages }) {
 									role="button"
 									className="card w-100"
 									key={index}
-									onClick={() => handleClickUser({ name: user.userName })}
+									onClick={() => handleClickUser({ name: user.Name  })}
 									style={{ maxHeight: '175px' }}
 								>
 									<div className="card-body d-flex justify-content-around align-items-center">
@@ -98,7 +99,7 @@ function Message({ joinRoom, sendMessage, messages }) {
 											alt={user.userName}
 											className="m-0 avatar"
 										/>
-										<span className="username">{user.userName}{" "}</span>
+										<span className="username">{user.name + ' ' + user.surName}{" "}</span>
 									</div>
 								</div>
 							);
@@ -133,7 +134,7 @@ function Message({ joinRoom, sendMessage, messages }) {
 						</>
 					) : 
 					<div className="noneSelectedUserArea">
-						If you want to chat please select user from the left side.
+					Konuşmak için Birini Seçiniz...
 					</div>
 					}
 				</Col>
