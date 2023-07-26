@@ -6,13 +6,36 @@ public class ChatHub : Hub
 {
     private readonly string _botUser;
     private readonly IDictionary<string, UserConnection> _connection;
-
+    private readonly IList<string> _activeUsers;
+   
     public ChatHub(IDictionary<string, UserConnection> connections)
     {
         _botUser = "MyChat Bot";
         _connection = connections;
+        _activeUsers = new List<string>();
     }
 
+    public override Task OnConnectedAsync()
+    {
+        string userName = Context.GetHttpContext().Request.Query["username"];
+        if (string.IsNullOrEmpty(userName))
+        {
+            Context.Abort();
+            return Task.CompletedTask;
+        }
+
+        _activeUsers.Add(userName); // Bağlantı kimliğini _activeUsers koleksiyonuna ekleyin
+
+        var activeUsers = GetActiveUsers();
+        Clients.Caller.SendAsync("UsersInRoom", activeUsers); // Bağlantıyı yapan client'a aktif kullanıcıları gönder
+
+        return base.OnConnectedAsync();
+    }
+
+    public IList<string> GetActiveUsers()
+    {
+        return _activeUsers.ToList();
+    }
     public override Task OnDisconnectedAsync(Exception? exception)
     {
         if (_connection.TryGetValue(Context.ConnectionId, out UserConnection userConnection))
