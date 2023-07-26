@@ -67,13 +67,13 @@ public class MessageService : IMessageService
             }
         }
     }
-    public PaginationHelper<Message> GetAll(PaginationRequest request)
+    public PaginationHelper<Message> GetAll(PaginationRequest request, int roomId)
     {
         using (var context = _unitOfWork.Create())
         {
             try
             {
-                var result = context.Repositories.messageQueryRepository.GetAll(request.PageNumber, request.PageSize);
+                var result = context.Repositories.messageQueryRepository.GetAll(roomId, request.PageNumber, request.PageSize);
                 return result;
             }
             catch (Exception ex)

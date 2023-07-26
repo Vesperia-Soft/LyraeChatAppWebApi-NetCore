@@ -30,12 +30,15 @@ public class MessageQueryRepository : Repository, IMessageQueryRepository
         return false;
     }
 
-    public PaginationHelper<Message> GetAll(int pageNumber, int pageSize)
+    public PaginationHelper<Message> GetAll(int roomId, int pageNumber, int pageSize)
     {
-        var command = CreateCommand("SELECT COUNT(*) FROM Messages");
+
+        var command = CreateCommand("SELECT COUNT(*) FROM Messages where RoomId=@roomId");
+        command.Parameters.AddWithValue("@roomId", roomId);
         int totalCount = (int)command.ExecuteScalar();
 
-        command.CommandText = $"SELECT * FROM Messages ORDER BY Id OFFSET {((pageNumber - 1) * pageSize)} ROWS FETCH NEXT {pageSize} ROWS ONLY";
+        command.CommandText = $"SELECT * FROM Messages  where RoomId=@roomId ORDER BY Id OFFSET {((pageNumber - 1) * pageSize)} ROWS FETCH NEXT {pageSize} ROWS ONLY";
+       
         using (var reader = command.ExecuteReader())
         {
             List<Message> messages = new List<Message>();
@@ -47,7 +50,6 @@ public class MessageQueryRepository : Repository, IMessageQueryRepository
                     Text = reader["Text"].ToString(),
                     UserId = Convert.ToInt32(reader["UserId"]),
                     RoomId = Convert.ToInt32(reader["RoomId"]),
-                    TimeStamps = Convert.ToDateTime(reader["TimeStamps"])
                 });
             }
 

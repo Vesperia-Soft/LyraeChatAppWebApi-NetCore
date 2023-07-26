@@ -5,7 +5,7 @@ namespace LyraeChatApp.Domain.Repositories.App.MessageRepositories;
 
 public interface IMessageQueryRepository
 {
-    PaginationHelper<Message> GetAll(int pageNumber, int pageSize);
+    PaginationHelper<Message> GetAll(int roomId, int pageNumber, int pageSize);
     IQueryable<Message> GetWhere();
     Task<MessageModel> GetById(int Id);
     Task<Message> GetFirstByExpression();

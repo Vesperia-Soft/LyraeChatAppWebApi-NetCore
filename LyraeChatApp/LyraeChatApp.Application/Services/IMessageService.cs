@@ -7,7 +7,7 @@ namespace LyraeChatApp.Application.Services;
 public interface IMessageService
 {
     Task<MessageModel> Get(int id);
-    PaginationHelper<Message> GetAll(PaginationRequest request);
+    PaginationHelper<Message> GetAll(PaginationRequest request,int roomId);
     Task Create(CreateMessageModel model);
     void Update(UpdateMessageModel model);
     Task Remove(int id);
