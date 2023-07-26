@@ -46,8 +46,11 @@
 .message {
     background-color: #2D4356;
     padding: 10px;
-    max-width: 50%;
+    /* max-width: 50%; */
+    width: 100%;
     word-break: break-all;
+    width: 50%;
+    margin-bottom: 10px;
 }
 
 .noneSelectedUserArea{
@@ -63,3 +66,10 @@
     padding: 50px;
 }
 
+.user-message{
+    width: 100%;
+}
+
+.message-container{
+    padding: 30px;
+}

@@ -12,30 +12,32 @@ function Message({ joinRoom, sendMessage, messages }) {
 	const [userName, setUserName] = useState();
 	const [users, setUsers] = useState([]);
 	const [message, setMessage] = useState('');
-	const apiService = new GenericApiService();
 	const [localStoreId, setLocalStoreId] = useState(0);
+
+
+	const apiService = new GenericApiService();
+
 	useEffect(() => {
 		const token = localStorage.getItem("token");
 		if (token) {
-		  const decodedToken = atob(token?.split(".")[1]);
-		  const parsedToken = JSON.parse(decodedToken);
-		  const userId = parsedToken['Id'];
-		  setLocalStoreId(userId);
-		  console.log(userId);
-		  setUserName(
-			parsedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]
-		  );
+			const decodedToken = atob(token?.split(".")[1]);
+			const parsedToken = JSON.parse(decodedToken);
+			const userId = parsedToken['Id'];
+			setLocalStoreId(userId);
+			setUserName(
+				parsedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]
+			);
 		}
-	  }, []);
-	  
-	  useEffect(() => {
+	}, []);
+
+	useEffect(() => {
 		const getUsers = async () => {
-		  const response = await apiService.get(`/Room/GetAllUserRoom?userId=${localStoreId}`);
-		  console.log(response.data.data);
-		  setUsers(response.data.data);
+			const response = await apiService.get(`/Room/GetAllUserRoom?userId=${localStoreId}`);
+			setUsers(response.data ? response.data.data : []);
 		};
 		getUsers();
-	  }, [localStoreId]);
+	}, [localStoreId]);
+
 	// useEffect(() => {
 	// 	const createRoom = async () => {
 	// 		if (room !== undefined) {
@@ -51,10 +53,12 @@ function Message({ joinRoom, sendMessage, messages }) {
 	// 	createRoom();
 	// }, [room]);
 
-	const handleClickUser = (user) => {
+	const handleClickUser = ({ user }) => {
 		setSelectedUser(user);
-		const newRoom = userName + user.name;
-		setRoom(newRoom);
+		// const newRoom = userName + user.name;
+		// setRoom(newRoom);
+
+		joinRoom(userName, `${user.roomId}`);
 	};
 
 	const handleSendMessage = (e) => {
@@ -71,6 +75,7 @@ function Message({ joinRoom, sendMessage, messages }) {
 			messageRef.current.scrollTo({ left: 0, top: scrollHeight - clientHeight, behavior: 'smooth' });
 		}
 	}, [messages])
+
 	return (
 		<Container fluid>
 			<Row>
@@ -94,7 +99,7 @@ function Message({ joinRoom, sendMessage, messages }) {
 									role="button"
 									className="card w-100"
 									key={index}
-									onClick={() => handleClickUser({ name: user.userName  })}
+									onClick={() => handleClickUser({ user: user })}
 									style={{ maxHeight: '175px' }}
 								>
 									<div className="card-body d-flex justify-content-around align-items-center">
@@ -114,15 +119,11 @@ function Message({ joinRoom, sendMessage, messages }) {
 					{selectedUser.name?.length > 0 ? (
 						<>
 							<div className="read-message h-100">
-								<div ref={messageRef} className="message-container h-100" style={{ maxHeight: 'calc(100vh - 175px)' }}>
+								<div ref={messageRef} className="message-container h-100" style={{ maxHeight: 'calc(100vh - 135px)' }}>
 									{messages.map((m, index) => (
-										<div key={index} className="user-message">
-											<div className="message">
-												{m.message}
-											</div>
-											<div className="from-user">
-												{m.user}
-											</div>
+										<div key={index} style={m.user !== userName ? { float: 'left'} : { float: 'right' }} className={"user-message"}>
+											<div style={m.user !== userName ? { float: 'left'} : { float: 'right' }} className="message">{m.message}</div>
+											{/* <div className="from-user">{m.user}</div> */}
 										</div>
 									))}
 								</div>
@@ -132,14 +133,14 @@ function Message({ joinRoom, sendMessage, messages }) {
 									<input type="text" className="form-control m-0" placeholder="message..." onChange={e => setMessage(e.target.value)} value={message} />
 									<button type="submit" disabled={!message} className="btn btn-custom w-25 mx-3 sendButton">
 										<FontAwesomeIcon icon={faPaperPlane} style={{ color: "#fff", fontSize: 24 }} />
-										</button>
+									</button>
 								</form>
 							</div>
 						</>
-					) : 
-					<div className="noneSelectedUserArea">
-					Konuşmak için Birini Seçiniz...
-					</div>
+					) :
+						<div className="noneSelectedUserArea">
+							Konuşmak için Birini Seçiniz...
+						</div>
 					}
 				</Col>
 			</Row>
