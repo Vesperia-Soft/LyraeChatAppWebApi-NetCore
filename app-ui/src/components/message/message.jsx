@@ -4,7 +4,7 @@ import "./message.css";
 import GenericApiService from "../../services/GenericApiService";
 import { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane, faPlane } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane, faAddressBook } from "@fortawesome/free-solid-svg-icons";
 
 function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 	const [selectedUser, setSelectedUser] = useState({});
@@ -14,7 +14,6 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 	const [users, setUsers] = useState([]);
 	const [message, setMessage] = useState('');
 	const [localStoreId, setLocalStoreId] = useState(0);
-	const [isHovered, setIsHovered] = useState(false);
 	const [activeRoomId, setActiveRoomId] = useState(0);
 
 
@@ -34,47 +33,39 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 		}
 	}, []);
 
+	const getUsers = async () => {
+		const response = await apiService.get(`/Room/GetAllUserRoom?userId=${localStoreId}`);
+		setUsers(response.data ? response.data.data : []);
+	};
 	useEffect(() => {
-		const getUsers = async () => {
-			const response = await apiService.get(`/Room/GetAllUserRoom?userId=${localStoreId}`);
-			setUsers(response.data ? response.data.data : []);
-		};
 		getUsers();
 	}, [localStoreId]);
 
-	// useEffect(() => {
-	// 	const createRoom = async () => {
-	// 		if (room !== undefined) {
-	// 			const response = await apiService.post("/Room/Create", {
-	// 				name: room,
-	// 				isActive: true,
-	// 			});
-	// 			if (response.data > 0) {
-	// 				joinRoom(userName, `${response.data}`);
-	// 			}
-	// 		}
-	// 	};
-	// 	createRoom();
-	// }, [room]);
-
-	const getOldUser = async (roomId) => {
-		const response = await apiService.get(`/Message/GetAll?PageNumber=1&PageSize=10&roomId=${roomId}`);
-		setOldMessages(response.data.items)
+	const getOldMessage = async (roomId) => {
+		const response = await apiService.get(`/Message/GetAll?PageNumber=1&PageSize=1000&roomId=${roomId}`);
+		setOldMessages(response.data && response.data.items)
 	}
 
-	const handleClickUser = ({ user }) => {
+	const handleClickUser = async ({ user }) => {
 		selectedUser && closeConnection()
 		setSelectedUser(user);
-		joinRoom(userName, `${user.roomId}`);
-		setActiveRoomId(user.roomId)
-		getOldUser(user.roomId);
+		console.log(user.roomId);
+		if (user.roomId === undefined) {
+			const response = await apiService.post(`/Room/Create`, { name: user.userName + userName, isActive: true, userId: [userId, `${user.id}`] });
+			joinRoom(userName, `${response.data}`);
+			setActiveRoomId(response.data)
+		} else {
+			joinRoom(userName, `${user.roomId}`);
+			setActiveRoomId(user.roomId)
+			getOldMessage(user.roomId);
+		}
+		getUsers();
 	};
 
 	const handleSendMessage = async (e) => {
 		e.preventDefault();
 		sendMessage(message);
 		const response = await apiService.post(`/Message/Create`, { text: message, userId: userId, roomId: activeRoomId, creatorName: userName });
-		// console.log(response);
 		setMessage('');
 	}
 
@@ -87,19 +78,28 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 		}
 	}, [messages])
 
+	const handleClickContact = async () => {
+		const response = await apiService.get(`/User/GetAll?PageNumber=1&PageSize=100`);
+		setUsers(response.data.items);
+	}
+
 	return (
 		<Container fluid>
 			<Row>
 				<Col
 					md={3}
-					className="d-flex flex-column justify-content-center align-items-center left-side"
+					className="left-side"
 					style={{
 						backgroundColor: "#2D4356",
 						height: "calc(100vh - 114px)",
-						maxHeight: "calc(100vh - 50px)",
+						maxHeight: "calc(100vh - 114px)",
 						overflowY: "auto",
 					}}
 				>
+					<div className="subContainerLeftSide">
+						<FontAwesomeIcon onClick={() => handleClickContact()} role="button" className="addressIcon" icon={faAddressBook} />
+						<p>Sohbetler</p>
+					</div>
 					{users.length > 0
 						? users.map((user, index) => {
 							if (user.userName === localStorage.getItem('loginUserName')) {
@@ -119,7 +119,7 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 											alt={user.userName}
 											className="m-0 avatar"
 										/>
-										<span className="username">{user.name + ' ' + user.surName}{" "}</span>
+										<span className="username">{user.userName}{" "}</span>
 									</div>
 								</div>
 							);
@@ -127,10 +127,10 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 						: null}
 				</Col>
 				<Col md={9} className="message-area p-0">
-					{selectedUser.name?.length > 0 ? (
+					{selectedUser.userName?.length > 0 ? (
 						<>
-							<div className="read-message h-100">
-								<div ref={messageRef} className="message-container h-100" style={{ maxHeight: 'calc(100vh - 135px)' }}>
+							<div className="read-message h-80" >
+								<div ref={messageRef} className="message-container" style={{height: "calc(100vh - 200px)"}}>
 									{
 										oldMessages.length > 0 && oldMessages.map((m, index) => (
 											<div key={index} style={m.userId != userId ? { float: 'left' } : { float: 'right' }} className={"user-message"}>
@@ -152,7 +152,7 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 							<div className="send-message">
 								<form className="d-flex p-4 formArea" onSubmit={handleSendMessage}>
 									<input type="text" className="form-control m-0" placeholder="message..." onChange={e => setMessage(e.target.value)} value={message} />
-									<button onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} role="button" type="submit" disabled={!message} className="btn btn-custom w-25 mx-3 sendButton" >
+									<button role="button" type="submit" disabled={!message} className="btn btn-custom w-25 mx-3 sendButton" >
 										<FontAwesomeIcon className="planeIcon" icon={faPaperPlane} />
 									</button>
 								</form>
