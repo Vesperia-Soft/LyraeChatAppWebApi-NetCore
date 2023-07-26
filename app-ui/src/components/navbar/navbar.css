@@ -27,3 +27,8 @@
 .icon:hover {
      color: #FFC26F !important;
 }
+.title-head{
+    color: #fff;
+    padding: 20px;
+    text-align: left;
+}
