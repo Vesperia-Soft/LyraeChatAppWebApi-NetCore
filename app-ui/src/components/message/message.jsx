@@ -62,6 +62,7 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 		);
 		setUsers(response.data ? response.data.data : []);
 	};
+
 	useEffect(() => {
 		getUsers();
 	}, [localStoreId]);
@@ -96,7 +97,7 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 	const handleSendMessage = async (e) => {
 		e.preventDefault();
 		sendMessage(message);
-		const response = await apiService.post(`/Message/Create`, {
+		await apiService.post(`/Message/Create`, {
 			text: message,
 			userId: userId,
 			roomId: activeRoomId,
@@ -244,7 +245,6 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 										value={message}
 									/>
 									<button
-										role="button"
 										type="submit"
 										disabled={!message}
 										className="btn btn-custom w-25 mx-3 sendButton"
