@@ -77,3 +77,13 @@
 .message-container{
     padding: 30px;
 }
+
+.subContainerLeftSide{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 36px;
+    color: #fff;
+    border-bottom: 1px solid #C5DFF8;
+}

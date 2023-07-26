@@ -57,7 +57,7 @@ export default function Dashboard() {
             setConnection(connection)
         }
         catch (e) {
-            console.log(e);
+            // console.log(e);
         }
     }
 
