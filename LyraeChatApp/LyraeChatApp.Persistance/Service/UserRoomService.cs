@@ -47,7 +47,7 @@ public class UserRoomService : IUserRoomService
     {
         using (var context = _unitOfWork.Create())
         {
-            var result = context.Repositories.userRoomQueryRepository.GetAllByUser(userId);
+            var result = context.Repositories.userRoomQueryRepository.GetOtherUsersInSameRooms(userId);
 
             return ResponseDto<IList<UserRoomListModel>>.Success(result, 200);
         }

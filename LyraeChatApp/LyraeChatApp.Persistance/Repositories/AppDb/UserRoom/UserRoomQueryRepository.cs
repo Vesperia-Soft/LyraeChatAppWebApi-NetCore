@@ -11,26 +11,39 @@ public class UserRoomQueryRepository : Repository, IUserRoomQueryRepository
         _context = context;
         _transaction = transaction;
     }
-    public IList<UserRoomListModel> GetAllByUser(int userId)
+    public IList<UserRoomListModel> GetOtherUsersInSameRooms(int userId)
     {
-        var command = CreateCommand("SELECT *  FROM UserRoom where UserId=@userId");
-        command.Parameters.AddWithValue("userId", userId);
+        var otherUsers = new List<UserRoomListModel>();
 
-        using (var reader = command.ExecuteReader())
+        var commandGetOtherUsers = CreateCommand(@"
+        SELECT DISTINCT u.Id, u.UserName, u.Name, u.SurName, u.Photo ,ur.RoomId
+        FROM UserRoom ur
+        JOIN Users u ON ur.UserId = u.Id
+        WHERE ur.RoomId IN (SELECT RoomId FROM UserRoom WHERE UserId = @userId)
+        AND ur.UserId != @userId
+    ");
+        commandGetOtherUsers.Parameters.AddWithValue("userId", userId);
+
+        using (var reader = commandGetOtherUsers.ExecuteReader())
         {
-            List<UserRoomListModel> userRooms = new List<UserRoomListModel>();
             while (reader.Read())
             {
-                UserRoomListModel userRoom = new UserRoomListModel();
+                var userRoom = new UserRoomListModel
+                {
+                    UserId = reader["Id"] != DBNull.Value ? Convert.ToInt32(reader["Id"]) : 0,
+                    RoomId = reader["RoomId"] != DBNull.Value ? Convert.ToInt32(reader["RoomId"]) : 0,
+                    UserName = reader["UserName"] != DBNull.Value ? reader["UserName"].ToString() : "",
+                    Name = reader["Name"] != DBNull.Value ? reader["Name"].ToString() : "",
+                    SurName = reader["SurName"] != DBNull.Value ? reader["SurName"].ToString() : "",
+                    Photo = reader["Photo"] != DBNull.Value ? reader["Photo"].ToString() : ""
+                };
 
-                userRoom.Id = reader["Id"] != DBNull.Value ? Convert.ToInt32(reader["Id"]) : 0;
-                userRoom.UserId = reader["UserId"] != DBNull.Value ? Convert.ToInt32(reader["UserId"]) : 0;
-                userRoom.RoomId = reader["RoomId"] != DBNull.Value ? Convert.ToInt32(reader["RoomId"]) : 0;
-
-                userRooms.Add(userRoom);
+                otherUsers.Add(userRoom);
             }
-
-            return userRooms;
         }
+
+        return otherUsers;
     }
+
+
 }

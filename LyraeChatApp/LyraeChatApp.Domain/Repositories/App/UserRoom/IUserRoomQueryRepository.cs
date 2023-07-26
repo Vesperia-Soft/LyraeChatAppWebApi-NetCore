@@ -4,5 +4,5 @@ namespace LyraeChatApp.Domain.Repositories.App.UserRoom;
 
 public interface IUserRoomQueryRepository
 {
-    IList<UserRoomListModel> GetAllByUser(int userId);
+    IList<UserRoomListModel> GetOtherUsersInSameRooms(int userId);
 }
