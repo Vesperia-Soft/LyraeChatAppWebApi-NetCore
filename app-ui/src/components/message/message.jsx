@@ -34,7 +34,7 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 			})
 			.catch((err) => console.error("SignalR connection error:", err));
 
-		hubConnection.on("UsersInRoom", (users) => {
+		hubConnection.on("activeUsers", (users) => {
 			setActiveUsers(users);
 			console.log(users);
 		});
