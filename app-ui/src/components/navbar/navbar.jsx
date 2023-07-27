@@ -53,12 +53,12 @@ export default function Navbar() {
         />
       </button>
       <h1 className="title-head">Vesperia</h1>
-      <div>
+      <div className="d-flex justify-content-center align-items-center ">
         <img
           src={`https://localhost:7246/Image/GetImage/${userPhoto}`}
           alt={user.userName}
           className="m-0"
-          style={{width:'75px', height:'75px'}}
+          style={{width:'50px', height:'50px'}}
         />
         <span className="fs-2 text-white mx-4">{user.userName}</span>
       </div>
