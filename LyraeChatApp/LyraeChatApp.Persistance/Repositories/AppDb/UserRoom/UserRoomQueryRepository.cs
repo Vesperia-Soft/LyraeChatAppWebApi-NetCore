@@ -11,6 +11,9 @@ public class UserRoomQueryRepository : Repository, IUserRoomQueryRepository
         _context = context;
         _transaction = transaction;
     }
+
+
+
     public IList<UserRoomListModel> GetOtherUsersInSameRooms(int userId)
     {
         var otherUsers = new List<UserRoomListModel>();
@@ -43,6 +46,23 @@ public class UserRoomQueryRepository : Repository, IUserRoomQueryRepository
         }
 
         return otherUsers;
+    }
+
+    public async Task<bool> CheckUserRoomByUsers(IList<int> userId)
+    {
+        string userIdList = string.Join(",", userId);
+        var command = CreateCommand(@"
+                SELECT roomId
+                FROM UserRoom
+                WHERE UserId IN (" + userIdList + @")
+                GROUP BY roomId
+                HAVING COUNT(DISTINCT UserId) = " + userId.Count + ";");
+
+        object result = await command.ExecuteScalarAsync();
+
+        bool roomExists = (result != null && result != DBNull.Value);
+
+        return roomExists;
     }
 
 

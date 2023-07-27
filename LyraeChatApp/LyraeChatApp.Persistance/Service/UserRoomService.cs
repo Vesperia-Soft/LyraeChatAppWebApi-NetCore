@@ -38,7 +38,7 @@ public class UserRoomService : IUserRoomService
                 var userRoomMap = _mapper.Map<UserRoom>(userRoom);
                 await context.Repositories.userRoomCommandRepository.AddAsync(userRoomMap);
             }
-            
+
             context.SaveChanges();
         }
     }
@@ -50,6 +50,16 @@ public class UserRoomService : IUserRoomService
             var result = context.Repositories.userRoomQueryRepository.GetOtherUsersInSameRooms(userId);
 
             return ResponseDto<IList<UserRoomListModel>>.Success(result, 200);
+        }
+    }
+
+    public async Task<bool> CheckUserRoomByUsers(IList<int> userIds)
+    {
+        using (var context = _unitOfWork.Create())
+        {
+            var result = await context.Repositories.userRoomQueryRepository.CheckUserRoomByUsers(userIds);
+
+            return result;
         }
     }
     #endregion

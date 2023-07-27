@@ -7,4 +7,5 @@ public interface IUserRoomService
 {
     Task<ResponseDto<IList<UserRoomListModel>>> GetUserRoomListAsync(int userId);
     Task Create(IList<int> userId, int roomId);
+    Task<bool> CheckUserRoomByUsers(IList<int> userIds); 
 }

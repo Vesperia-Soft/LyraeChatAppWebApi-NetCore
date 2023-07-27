@@ -45,9 +45,15 @@ public class RoomController : CustomBaseController
     [HttpPost("[action]")]
     public async Task<IActionResult> Create(CreateRoomModel model)
     {
-        var roomId = await _roomService.CreateRoom(model);
+        var checkUserRoomByUser = await _userRoomService.CheckUserRoomByUsers(model.UserId);
 
-       await  _userRoomService.Create(model.UserId, roomId);
+        if (checkUserRoomByUser)
+        {
+            return NoContent();
+        }
+
+        var roomId = await _roomService.CreateRoom(model);
+        await _userRoomService.Create(model.UserId, roomId);
 
         return Ok(roomId);
     }
@@ -69,7 +75,7 @@ public class RoomController : CustomBaseController
     [HttpGet("[action]")]
     public async Task<IActionResult> GetAllUserRoom([FromQuery] int userId)
     {
-      var result =   await _userRoomService.GetUserRoomListAsync(userId);
+        var result = await _userRoomService.GetUserRoomListAsync(userId);
 
         return CreateActionResultInstance(result);
     }
