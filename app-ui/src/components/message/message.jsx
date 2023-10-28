@@ -205,7 +205,7 @@ function Message({ joinRoom, sendMessage, messages, closeConnection }) {
 													{m.text}
 												</div>
 												{/* <div className="from-user">{m.user}</div> */}
-											</div>
+											</div>   
 										))}
 									{messages.map((m, index) => (
 										<div

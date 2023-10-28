@@ -43,8 +43,11 @@ export default function Login() {
             <div className="logo">
                 <img src="https://media.licdn.com/dms/image/D4D0BAQFZEEJVPC_GRg/company-logo_200_200/0/1687459723526?e=1697068800&v=beta&t=r0ZQTcvX6v71TsZfmGLANO3tKzjV5VAq5odGN-ljC7Q" alt="" />
             </div>
-            <div className="text-center mt-4 name">
-                Vesperia Soft
+            <div className="text-center mt-4  name">
+                Vesperia 
+            </div>
+            <div className='text-center fs-2  blockquote-footer m-3 '>
+            Open Source
             </div>
             <form className="p-3 mt-3" onSubmit={handleSubmit}>
                 <div className="form-field d-flex align-items-center">
